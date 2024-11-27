@@ -2,7 +2,7 @@ import chalk from 'chalk';
 import stringWidth from 'string-width';
 import { Package } from '../types';
 import inquirer from 'inquirer';
-import { readConfig } from './config';
+import { readConfig } from './config.js';
 
 export function padString(str: string, width: number): string {
   const length = stringWidth(str);

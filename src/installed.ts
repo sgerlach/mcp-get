@@ -1,8 +1,8 @@
 import inquirer from 'inquirer';
 import chalk from 'chalk';
-import { readConfig } from './utils/config';
-import { displayPackageDetailsWithActions } from './utils/display';
-import { uninstallPackage } from './utils/package-management';
+import { readConfig } from './utils/config.js';
+import { displayPackageDetailsWithActions } from './utils/display.js';
+import { uninstallPackage } from './utils/package-management.js';
 import { Package } from './types';
 import { readFileSync } from 'fs';
 import { join } from 'path';

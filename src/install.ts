@@ -3,11 +3,11 @@ import { join } from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { Package } from './types/index.js';
-import { installMCPServer } from './utils/config';
+import { installMCPServer } from './utils/config.js';
 import inquirer from 'inquirer';
 import { exec } from 'child_process';
 import { promisify } from 'util';
-import { packageHelpers } from './helpers';
+import { packageHelpers } from './helpers/index.js';
 import chalk from 'chalk';
 
 const execAsync = promisify(exec);

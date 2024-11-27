@@ -5,9 +5,9 @@ import { join } from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { Package } from './types';
-import { uninstallPackage } from './utils/package-management';
-import { displayPackageDetailsWithActions } from './utils/display';
-import { list } from './list';
+import { uninstallPackage } from './utils/package-management.js';
+import { displayPackageDetailsWithActions } from './utils/display.js';
+import { list } from './list.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);

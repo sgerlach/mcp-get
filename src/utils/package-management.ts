@@ -1,6 +1,6 @@
 import inquirer from 'inquirer';
 import { Package } from '../types';
-import { getConfigPath, installMCPServer, readConfig, writeConfig } from './config';
+import { getConfigPath, installMCPServer, readConfig, writeConfig } from './config.js';
 import { exec } from 'child_process';
 import { promisify } from 'util';
 import { packageHelpers } from '../helpers/index.js';

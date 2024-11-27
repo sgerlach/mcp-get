@@ -4,7 +4,7 @@ import { install } from './install.js';
 import { list } from './list.js';
 import inquirer from 'inquirer';
 import autocomplete from 'inquirer-autocomplete-prompt';
-import { listInstalledPackages } from './installed';
+import { listInstalledPackages } from './installed.js';
 import { uninstall } from './uninstall.js';
 
 inquirer.registerPrompt('autocomplete', autocomplete);

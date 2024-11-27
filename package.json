@@ -39,5 +39,10 @@
     "package.json",
     "packages"
   ],
-  "type": "module"
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js"
+    }
+  }
 }
