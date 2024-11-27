@@ -86,6 +86,14 @@ export async function extractPackageInfo(): Promise<PackageInfo[]> {
       }
     }
 
+    // Write updated packages to file if there are changes
+    if (hasChanges) {
+      fs.writeFileSync(outputPath, JSON.stringify(mergedPackages, null, 2));
+      console.log('Package list updated successfully');
+    } else {
+      console.log('No changes detected in package list');
+    }
+
     // Cleanup
     fs.rmSync(tempDir, { recursive: true, force: true });
     console.log('Temporary files cleaned up');
@@ -100,4 +108,14 @@ export async function extractPackageInfo(): Promise<PackageInfo[]> {
     }
     throw error;
   }
-} 
+}
+
+// Run the function if this file is executed directly
+if (import.meta.url === `file://${__filename}`) {
+  extractPackageInfo()
+    .then(() => console.log('Package extraction completed'))
+    .catch(error => {
+      console.error('Failed to extract packages:', error);
+      process.exit(1);
+    });
+}
