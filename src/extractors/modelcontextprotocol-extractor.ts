@@ -108,10 +108,11 @@ export async function extractPackageInfo(): Promise<PackageInfo[]> {
       fs.writeFileSync(outputPath, JSON.stringify(mergedPackages, null, 2));
       console.log('Package list updated successfully');
       
-      // Write commit message
+      // Write commit message with total number of changes
       if (changes.length === 0) {
         changes.push('- Initial package list creation');
       }
+      commitMsg = `chore(packages): update MCP package list (${changes.length} packages)\n\nChanges:\n`;
       commitMsg += changes.join('\n');
       fs.writeFileSync(commitMsgPath, commitMsg);
       console.log('Commit message generated');
