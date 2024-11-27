@@ -21,6 +21,7 @@ interface PackageInfo {
 export async function extractPackageInfo(): Promise<PackageInfo[]> {
   const tempDir = path.join(__dirname, '../../temp');
   const outputPath = path.join(__dirname, '../../packages/package-list.json');
+  const commitMsgPath = path.join(__dirname, '../../temp/commit-msg.txt');
 
   try {
     // Load existing packages
@@ -33,6 +34,10 @@ export async function extractPackageInfo(): Promise<PackageInfo[]> {
     if (!fs.existsSync(tempDir)) {
       fs.mkdirSync(tempDir, { recursive: true });
     }
+
+    // Initialize commit message
+    let commitMsg = "chore(packages): update MCP package list\n\nChanges:\n";
+    let changes: string[] = [];
 
     // Clone the repository
     console.log('Cloning repository...');
@@ -74,15 +79,27 @@ export async function extractPackageInfo(): Promise<PackageInfo[]> {
       if (existingIndex >= 0) {
         // Update existing package if there are changes
         if (JSON.stringify(mergedPackages[existingIndex]) !== JSON.stringify(newPkg)) {
+          const oldPkg = mergedPackages[existingIndex];
           mergedPackages[existingIndex] = newPkg;
           hasChanges = true;
           console.log(`Updated package: ${newPkg.name}`);
+          
+          // Add detailed change information
+          const changeDetails = [];
+          if (oldPkg.description !== newPkg.description) changeDetails.push('description');
+          if (oldPkg.vendor !== newPkg.vendor) changeDetails.push('vendor');
+          if (oldPkg.license !== newPkg.license) changeDetails.push('license');
+          if (oldPkg.homepage !== newPkg.homepage) changeDetails.push('homepage');
+          if (oldPkg.sourceUrl !== newPkg.sourceUrl) changeDetails.push('sourceUrl');
+          
+          changes.push(`- Updated ${newPkg.name} (changed: ${changeDetails.join(', ')})`);
         }
       } else {
         // Add new package
         mergedPackages.push(newPkg);
         hasChanges = true;
         console.log(`Added new package: ${newPkg.name}`);
+        changes.push(`- Added new package: ${newPkg.name}`);
       }
     }
 
@@ -90,12 +107,26 @@ export async function extractPackageInfo(): Promise<PackageInfo[]> {
     if (hasChanges) {
       fs.writeFileSync(outputPath, JSON.stringify(mergedPackages, null, 2));
       console.log('Package list updated successfully');
+      
+      // Write commit message
+      if (changes.length === 0) {
+        changes.push('- Initial package list creation');
+      }
+      commitMsg += changes.join('\n');
+      fs.writeFileSync(commitMsgPath, commitMsg);
+      console.log('Commit message generated');
     } else {
       console.log('No changes detected in package list');
     }
 
-    // Cleanup
-    fs.rmSync(tempDir, { recursive: true, force: true });
+    // Cleanup (but keep commit-msg.txt if it exists)
+    const filesToKeep = new Set(['commit-msg.txt']);
+    for (const file of fs.readdirSync(tempDir)) {
+      if (!filesToKeep.has(file)) {
+        const filePath = path.join(tempDir, file);
+        fs.rmSync(filePath, { recursive: true, force: true });
+      }
+    }
     console.log('Temporary files cleaned up');
 
     return mergedPackages;
