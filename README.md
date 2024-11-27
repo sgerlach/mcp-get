@@ -1,37 +1,69 @@
 # mcp-install
 
-## Installation
+## Project Description
 
-To install a package using `mcp-get`, run the following command:
+`mcp-get` is a command-line tool that allows you to install, list, and uninstall packages. It provides a convenient way to manage packages for your project.
 
-```
-npx @michaellatman/mcp-get install {PACKAGE}
-```
+## Prerequisites
 
-Replace `{PACKAGE}` with the name of the package you want to install.
+- Node.js (version 14 or higher)
 
-## List Packages
+## Usage Examples
 
-To list all available packages, run the following command:
+### Install a Package
 
 ```
-npx @michaellatman/mcp-get ls
+npx @michaellatman/mcp-get install @modelcontextprotocol/server-brave-search
 ```
 
-or
+Sample output:
+```
+Installing @modelcontextprotocol/server-brave-search...
+Installation complete.
+```
+
+### List Packages
 
 ```
 npx @michaellatman/mcp-get list
 ```
 
-This will display a list of all available packages with their details.
+Sample output:
+```
+📦 Available Packages
+Found 11 packages
 
-## Uninstall a Package
+@modelcontextprotocol/server-brave-search │ MCP server for Brave Search API integration │ Anthropic, PBC (https://anthropic.com) │ MIT
+@modelcontextprotocol/server-everything   │ MCP server that exercises all the features of the MCP protocol │ Anthropic, PBC (https://anthropic.com) │ MIT
+...
+```
 
-To uninstall a package using `mcp-get`, run the following command:
+### Uninstall a Package
 
 ```
-npx @michaellatman/mcp-get uninstall {PACKAGE}
+npx @michaellatman/mcp-get uninstall @modelcontextprotocol/server-brave-search
 ```
 
-Replace `{PACKAGE}` with the name of the package you want to uninstall.
+Sample output:
+```
+Uninstalling @modelcontextprotocol/server-brave-search...
+Uninstallation complete.
+```
+
+## Contributing
+
+We welcome contributions to the project! If you would like to contribute, please follow these guidelines:
+
+1. Fork the repository and create a new branch for your feature or bugfix.
+2. Write tests for your changes and ensure all existing tests pass.
+3. Submit a pull request with a clear description of your changes.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+## Contact Information
+
+If you have any questions or need help, feel free to reach out:
+
+- GitHub Issues: [michaellatman/mcp-get](https://github.com/michaellatman/mcp-get/issues)
