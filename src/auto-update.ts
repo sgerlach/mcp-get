@@ -2,6 +2,7 @@ import { exec } from 'child_process';
 import { promisify } from 'util';
 import { readFileSync } from 'fs';
 import { join } from 'path';
+import chalk from 'chalk';
 
 const execAsync = promisify(exec);
 
@@ -15,17 +16,26 @@ async function getLatestVersion(): Promise<string> {
   return stdout.trim();
 }
 
-async function updatePackage(): Promise<void> {
-  const currentVersion = await getCurrentVersion();
-  const latestVersion = await getLatestVersion();
+export async function updatePackage(): Promise<void> {
+  try {
+    const currentVersion = await getCurrentVersion();
+    const latestVersion = await getLatestVersion();
 
-  if (currentVersion !== latestVersion) {
-    console.log(`Updating @michaellatman/mcp-get from version ${currentVersion} to ${latestVersion}`);
-    await execAsync('npm install -g @michaellatman/mcp-get');
-    console.log('Update complete.');
-  } else {
-    console.log('@michaellatman/mcp-get is already up to date.');
+    if (currentVersion !== latestVersion) {
+      console.log(chalk.yellow(`\nA new version of mcp-get is available: ${latestVersion} (current: ${currentVersion})`));
+      console.log(chalk.cyan('Installing update...'));
+      
+      // Use npx to ensure we get the latest version
+      await execAsync('npx --yes @michaellatman/mcp-get@latest');
+      
+      console.log(chalk.green('✓ Update complete\n'));
+      
+      // Exit after update to ensure the new version is used
+      process.exit(0);
+    }
+  } catch (error) {
+    // Log update check failure but continue with execution
+    console.log(chalk.yellow('\nFailed to check for updates. Continuing with current version.'));
   }
 }
-export { updatePackage };
 

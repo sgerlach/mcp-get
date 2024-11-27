@@ -32,7 +32,7 @@ This tool helps you install and manage MCP servers that connect Claude to variou
 ### Install a Package
 
 ```
-npx @michaellatman/mcp-get install @modelcontextprotocol/server-brave-search
+npx @michaellatman/mcp-get@latest install @modelcontextprotocol/server-brave-search
 ```
 
 Sample output:
@@ -44,7 +44,7 @@ Installation complete.
 ### List Packages
 
 ```
-npx @michaellatman/mcp-get list
+npx @michaellatman/mcp-get@latest list
 ```
 
 Sample output:
@@ -60,13 +60,27 @@ Found 11 packages
 ### Uninstall a Package
 
 ```
-npx @michaellatman/mcp-get uninstall @modelcontextprotocol/server-brave-search
+npx @michaellatman/mcp-get@latest uninstall @modelcontextprotocol/server-brave-search
 ```
 
 Sample output:
 ```
 Uninstalling @modelcontextprotocol/server-brave-search...
 Uninstallation complete.
+```
+
+### Update the Tool
+
+The tool automatically checks for updates when running commands. You can also manually update:
+
+```
+npx @michaellatman/mcp-get@latest update
+```
+
+Sample output:
+```
+Updating mcp-get...
+Update complete.
 ```
 
 ## Contributing
