@@ -41,9 +41,8 @@ jobs:
         if: steps.git-check.outputs.changes == 'true'
         run: |
           if [ -f "temp/commit-msg.txt" ]; then
-            echo "message<<EOF" >> "$GITHUB_OUTPUT"
-            cat temp/commit-msg.txt >> "$GITHUB_OUTPUT"
-            echo "EOF" >> "$GITHUB_OUTPUT"
+            MSG=$(cat temp/commit-msg.txt)
+            echo "message=$MSG" >> "$GITHUB_OUTPUT"
           else
             echo "message=chore(packages): update MCP package list" >> "$GITHUB_OUTPUT"
           fi
