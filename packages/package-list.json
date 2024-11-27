@@ -1,0 +1,16 @@
+[
+  {
+    "name": "package1",
+    "description": "Description for package1",
+    "vendor": "Vendor1",
+    "sourceUrl": "http://example.com/package1",
+    "license": "MIT"
+  },
+  {
+    "name": "package2",
+    "description": "Description for package2",
+    "vendor": "Vendor2",
+    "sourceUrl": "http://example.com/package2",
+    "license": "Apache-2.0"
+  }
+]
