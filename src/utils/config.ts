@@ -14,6 +14,10 @@ export interface ClaudeConfig {
 }
 
 export function getConfigPath(): string {
+  if (process.platform === 'win32') {
+    return path.join(process.env.APPDATA || '', 'Claude', 'config.json');
+  }
+  
   const configDir = path.join(os.homedir(), 'Library', 'Application Support', 'Claude');
   return path.join(configDir, 'claude_desktop_config.json');
 }
