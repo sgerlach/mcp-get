@@ -26,6 +26,7 @@ This tool helps you install and manage MCP servers that connect Claude to variou
 
 > **Note**: This tool has not been thoroughly tested on Windows systems yet. While it may work, you might encounter some issues. Contributions to improve Windows compatibility are welcome!
 
+> **Note**: Currently, only NPX servers are supported. Pull requests are welcome to support Python servers.
 
 ## Usage Examples
 
@@ -100,3 +101,31 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 If you have any questions or need help, feel free to reach out:
 
 - GitHub Issues: [michaellatman/mcp-get](https://github.com/michaellatman/mcp-get/issues)
+
+## Adding Your Own MCP Server to the Registry
+
+To add your own MCP server to the registry, follow these steps:
+
+1. **Create Your MCP Server**: Develop your MCP server according to the MCP protocol specifications. Ensure it meets all the necessary requirements and functionalities.
+
+2. **Prepare `package-list.json`**: Modify the existing `packages/package-list.json` file with the following required fields and format:
+    ```json
+    [
+      {
+        "name": "your-package-name",
+        "description": "A brief description of your MCP server",
+        "vendor": "Your Name or Organization",
+        "sourceUrl": "URL to the source code repository",
+        "homepage": "URL to the homepage or documentation",
+        "license": "License type (e.g., MIT)"
+      }
+    ]
+    ```
+
+3. **Update the Registry**: Add your server details to the `packages/package-list.json` file in the repository. Ensure the details are accurate and follow the required format.
+
+4. **Submit a Pull Request**: Fork the repository, make your changes, and submit a pull request with a clear description of your MCP server and its functionalities.
+
+5. **Review and Merge**: The maintainers will review your pull request. If everything is in order, your MCP server will be added to the registry.
+
+Once your changes are merged, they will automatically be published to NPM and available for users.
