@@ -1,0 +1,19 @@
+{
+  "name": "@michaellatman/mcp-get",
+  "version": "1.0.0",
+  "description": "A NPX command to install and list packages",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "bin": {
+    "mcp-get": "dist/index.js"
+  },
+  "dependencies": {
+    "typescript": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^14.0.0"
+  }
+}
