@@ -5,7 +5,8 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "publish": "npm publish"
   },
   "bin": {
     "mcp-get": "dist/index.js"
@@ -15,5 +16,10 @@
   },
   "devDependencies": {
     "@types/node": "^14.0.0"
-  }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "package.json"
+  ]
 }
