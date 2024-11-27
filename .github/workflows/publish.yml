@@ -27,6 +27,9 @@ jobs:
       - name: Build project
         run: npm run build
 
+      - name: Add package-lock.json to gitignore
+        run: echo "package-lock.json" >> .gitignore
+
       - name: Configure Git
         run: |
           git config --local user.email "action@github.com"
