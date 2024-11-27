@@ -1,0 +1,45 @@
+name: Update Package List
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Runs daily at midnight
+  workflow_dispatch:  # Allows manual triggering
+
+jobs:
+  update-packages:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run package extractor
+        run: npm run extract
+
+      - name: Check for changes
+        id: git-check
+        run: |
+          git diff --exit-code packages/package-list.json || echo "changes=true" >> $GITHUB_OUTPUT
+
+      - name: Create Pull Request
+        if: steps.git-check.outputs.changes == 'true'
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: 'chore: update package list'
+          title: 'Update MCP Package List'
+          body: |
+            This PR updates the package list with new or modified MCP servers.
+            
+            Changes were automatically detected and generated.
+          branch: update-package-list
+          base: main
+          delete-branch: true 

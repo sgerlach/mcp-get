@@ -1,5 +1,11 @@
-import { install } from './install';
-import { list } from './list';
+#!/usr/bin/env node
+
+import { install } from './install.js';
+import { list } from './list.js';
+import inquirer from 'inquirer';
+import autocomplete from 'inquirer-autocomplete-prompt';
+
+inquirer.registerPrompt('autocomplete', autocomplete);
 
 const args = process.argv.slice(2);
 const command = args[0];

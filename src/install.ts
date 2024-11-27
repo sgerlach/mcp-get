@@ -1,25 +1,15 @@
-import * as fs from 'fs';
-import * as path from 'path';
+import { readFileSync } from 'fs';
+import { join } from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import { Package } from './types/index.js';
 
-interface Package {
-  name: string;
-  description: string;
-  vendor: string;
-  sourceUrl: string;
-  license: string;
-}
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
-const packageListPath = path.join(__dirname, '../packages/package-list.json');
+const packageListPath = join(__dirname, '../packages/package-list.json');
 
-export function install(packageName: string): void {
-  const packageList: Package[] = JSON.parse(fs.readFileSync(packageListPath, 'utf-8'));
-
-  const pkg = packageList.find(p => p.name === packageName);
-  if (!pkg) {
-    console.error(`Package ${packageName} not found.`);
-    process.exit(1);
-  }
-
+export async function installPackage(pkg: Package): Promise<void> {
   console.log(`Installing package: ${pkg.name}`);
   console.log(`Description: ${pkg.description}`);
   console.log(`Vendor: ${pkg.vendor}`);
@@ -27,4 +17,16 @@ export function install(packageName: string): void {
   console.log(`License: ${pkg.license}`);
 
   // Here you can add the logic to download and install the package from the sourceUrl
+}
+
+export async function install(packageName: string): Promise<void> {
+  const packageList: Package[] = JSON.parse(readFileSync(packageListPath, 'utf-8'));
+
+  const pkg = packageList.find(p => p.name === packageName);
+  if (!pkg) {
+    console.error(`Package ${packageName} not found.`);
+    process.exit(1);
+  }
+
+  await installPackage(pkg);
 }

@@ -27,5 +27,5 @@ async function updatePackage(): Promise<void> {
     console.log('@michaellatman/mcp-get is already up to date.');
   }
 }
-
 export { updatePackage };
+
