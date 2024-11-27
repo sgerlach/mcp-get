@@ -3,5 +3,6 @@ export interface Package {
   description: string;
   vendor: string;
   sourceUrl: string;
+  homepage: string;
   license: string;
 } 
