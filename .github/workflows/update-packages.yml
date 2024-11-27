@@ -41,7 +41,7 @@ jobs:
         if: steps.git-check.outputs.changes == 'true'
         run: |
           if [ -f "temp/commit-msg.txt" ]; then
-            MSG=$(cat temp/commit-msg.txt | sed 's/$/\\n/' | tr -d '\n')
+            MSG=$(cat temp/commit-msg.txt | sed 's/\\n/\n/g')
             echo "message<<EOF" >> $GITHUB_OUTPUT
             echo "$MSG" >> $GITHUB_OUTPUT
             echo "EOF" >> $GITHUB_OUTPUT
@@ -71,10 +71,10 @@ jobs:
             automated pr
             automerge
 
-      - name: Enable Auto-Merge
-        if: steps.git-check.outputs.changes == 'true'
-        run: |
-          PR_NUMBER=$(gh pr list --json number --jq '.[0].number')
-          gh pr merge $PR_NUMBER --auto --merge
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # - name: Enable Auto-Merge
+      #   if: steps.git-check.outputs.changes == 'true'
+      #   run: |
+      #     PR_NUMBER=$(gh pr list --json number --jq '.[0].number')
+      #     gh pr merge $PR_NUMBER --auto --merge
+      #   env:
+      #     GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
