@@ -41,12 +41,14 @@
     "dist",
     "README.md",
     "package.json",
-    "packages"
+    "packages",
+    "LICENSE"
   ],
   "type": "module",
   "exports": {
     ".": {
       "import": "./dist/index.js"
     }
-  }
+  },
+  "license": "MIT"
 }

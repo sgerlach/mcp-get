@@ -1,12 +1,31 @@
-# mcp-install
+# mcp-get
 
-## Project Description
+A command-line tool for installing and managing Model Context Protocol (MCP) servers.
 
-`mcp-get` is a command-line tool that allows you to install, list, and uninstall packages. It provides a convenient way to manage packages for your project.
+## About Model Context Protocol
+
+The Model Context Protocol (MCP) is an open protocol that enables seamless integration between LLM applications and external data sources and tools. Whether you're building an AI-powered IDE, enhancing a chat interface, or creating custom AI workflows, MCP provides a standardized way to connect LLMs with the context they need.
+
+Learn more about MCP at [modelcontextprotocol.io](https://modelcontextprotocol.io/introduction)
+
+## What Packages Can You Install?
+
+This tool helps you install and manage MCP servers that connect Claude to various data sources and tools, including:
+
+- **Development Tools**: GitHub, GitLab
+- **Communication Tools**: Slack
+- **Search & Data**: Brave Search, Google Maps
+- **Database Systems**: PostgreSQL
+- **Web Automation**: Puppeteer
+- **Cloud Storage**: Google Drive
 
 ## Prerequisites
 
 - Node.js (version 14 or higher)
+- Claude Desktop app (for local MCP server usage)
+
+> **Note**: This tool has not been thoroughly tested on Windows systems yet. While it may work, you might encounter some issues. Contributions to improve Windows compatibility are welcome!
+
 
 ## Usage Examples
 
