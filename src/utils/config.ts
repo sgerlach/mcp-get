@@ -37,7 +37,7 @@ export function writeConfig(config: ClaudeConfig): void {
   fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
 }
 
-export function installMCPServer(packageName: string, env?: Record<string, string>): void {
+export function installMCPServer(packageName: string, envVars?: Record<string, string>): void {
   const config = readConfig();
   const serverName = packageName.replace(/\//g, '-');
   
@@ -48,7 +48,7 @@ export function installMCPServer(packageName: string, env?: Record<string, strin
   config.mcpServers[serverName] = {
     command: 'npx',
     args: ['-y', packageName],
-    ...(env && { env })
+    env: envVars
   };
   
   writeConfig(config);

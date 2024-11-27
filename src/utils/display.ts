@@ -1,6 +1,8 @@
 import chalk from 'chalk';
 import stringWidth from 'string-width';
 import { Package } from '../types';
+import inquirer from 'inquirer';
+import { readConfig } from './config';
 
 export function padString(str: string, width: number): string {
   const length = stringWidth(str);
@@ -8,7 +10,7 @@ export function padString(str: string, width: number): string {
 }
 
 export function displayPackageDetails(pkg: Package) {
-  const boxWidth = 80;
+  const boxWidth = 100;
   const padding = 2;
   const labelWidth = 13;
   const horizontalLine = '─'.repeat(boxWidth - 2);
@@ -48,4 +50,32 @@ export function displayPackageDetails(pkg: Package) {
 
 export function formatPackageInfo(pkg: Package): string {
   return `${pkg.name} - ${pkg.description} (${pkg.vendor})`;
+}
+
+export async function displayPackageDetailsWithActions(pkg: Package) {
+  displayPackageDetails(pkg);
+  
+  // Check if package is installed
+  const config = readConfig();
+  const serverName = pkg.name.replace(/\//g, '-');
+  const isInstalled = config.mcpServers && serverName in config.mcpServers;
+  
+  const choices = [
+    ...(isInstalled ? [] : [{ name: 'Install package', value: 'install' }]),
+    ...(isInstalled ? [{ name: 'Uninstall package', value: 'uninstall' }] : []),
+    { name: 'Open source URL', value: 'open' },
+    { name: 'Back to package list', value: 'back' },
+    { name: 'Exit', value: 'exit' }
+  ];
+
+  const { action } = await inquirer.prompt<{ action: string }>([
+    {
+      type: 'list',
+      name: 'action',
+      message: 'What would you like to do?',
+      choices
+    }
+  ]);
+
+  return action;
 } 

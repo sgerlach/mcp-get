@@ -8,6 +8,7 @@ import inquirer from 'inquirer';
 import { exec } from 'child_process';
 import { promisify } from 'util';
 import { packageHelpers } from './helpers';
+import chalk from 'chalk';
 
 const execAsync = promisify(exec);
 
@@ -21,46 +22,75 @@ async function handlePackageHelper(packageName: string): Promise<Record<string, 
   if (!helper?.requiredEnvVars) return undefined;
 
   const envVars: Record<string, string> = {};
+  console.log(chalk.cyan('\nEnvironment Variable Configuration:'));
+  
+  // First check if env vars are needed and get user confirmation
+  console.log(chalk.yellow('\nThis package requires configuration of environment variables.'));
+  const { proceed } = await inquirer.prompt<{ proceed: boolean }>([{
+    type: 'confirm',
+    name: 'proceed',
+    message: 'Would you like to configure them now?',
+    default: true
+  }]);
+  
+  if (!proceed) {
+    console.log(chalk.yellow('\nInstallation cancelled. Package requires environment configuration.'));
+    process.exit(0);
+  }
   
   for (const [envVar, config] of Object.entries(helper.requiredEnvVars)) {
-    const envConfig = config as { description: string; required: boolean };
+    const envConfig = config as { description: string; required: boolean; default?: string };
     const existingValue = process.env[envVar];
+    
+    console.log(chalk.gray(`\n${envVar}:`));
+    console.log(chalk.gray(`Description: ${envConfig.description}`));
+    if (envConfig.default) {
+      console.log(chalk.gray(`Default: ${envConfig.default}`));
+    }
     
     if (existingValue) {
       const { useExisting } = await inquirer.prompt<{ useExisting: boolean }>([{
         type: 'confirm',
         name: 'useExisting',
-        message: `Found existing ${envVar} in your environment. Would you like to use it?`,
+        message: `Found existing ${envVar} in environment. Use this value?`,
         default: true
       }]);
       
       if (useExisting) {
         envVars[envVar] = existingValue;
+        console.log(chalk.green(`Using existing ${envVar}`));
         continue;
       }
     }
 
-    if (envConfig.required) {
-      const { value, configure } = await inquirer.prompt([
-        {
-          type: 'confirm',
-          name: 'configure',
-          message: `${envVar} is required for ${packageName}. Would you like to configure it now?`,
-          default: true
-        },
-        {
-          type: 'input',
-          name: 'value',
-          message: `Please enter your ${envVar} (${envConfig.description}):`,
-          when: (answers) => answers.configure
-        }
-      ]);
+    const { configure } = await inquirer.prompt([{
+      type: 'confirm',
+      name: 'configure',
+      message: `Would you like to configure ${envVar}${envConfig.required ? ' (required)' : ' (optional)'}?`,
+      default: envConfig.required
+    }]);
 
-      if (configure && value) {
+    if (configure) {
+      const { value } = await inquirer.prompt([{
+        type: 'input',
+        name: 'value',
+        message: `Enter value for ${envVar}:`,
+        default: envConfig.default,
+        validate: (input) => {
+          if (envConfig.required && !input) {
+            return `${envVar} is required`;
+          }
+          return true;
+        }
+      }]);
+      
+      if (value) {
         envVars[envVar] = value;
-      } else if (envConfig.required) {
-        console.log(`\nSkipping ${envVar} configuration. You'll need to set it in your environment before using ${packageName}.`);
+        console.log(chalk.green(`✓ ${envVar} configured`));
       }
+    } else if (envConfig.required) {
+      console.log(chalk.yellow(`\n⚠️  Warning: ${envVar} is required but not configured. You'll need to set it manually.`));
+      process.exit(0);
     }
   }
   

@@ -1,10 +1,110 @@
 import inquirer from 'inquirer';
 import { Package } from '../types';
-import { installMCPServer, readConfig, writeConfig } from './config';
+import { getConfigPath, installMCPServer, readConfig, writeConfig } from './config';
 import { exec } from 'child_process';
 import { promisify } from 'util';
+import { packageHelpers } from '../helpers/index.js';
 
 const execAsync = promisify(exec);
+
+async function promptForEnvVars(packageName: string): Promise<Record<string, string> | undefined> {
+  const helpers = packageHelpers[packageName];
+  if (!helpers?.requiredEnvVars) {
+    return undefined;
+  }
+
+  // Check if all required variables exist in environment
+  const existingEnvVars: Record<string, string> = {};
+  let hasAllRequired = true;
+  
+  for (const [key, value] of Object.entries(helpers.requiredEnvVars)) {
+    const existingValue = process.env[key];
+    if (existingValue) {
+      existingEnvVars[key] = existingValue;
+    } else if (value.required) {
+      hasAllRequired = false;
+    }
+  }
+
+  if (hasAllRequired && Object.keys(existingEnvVars).length > 0) {
+    const { useAutoSetup } = await inquirer.prompt<{ useAutoSetup: boolean }>([{
+      type: 'confirm',
+      name: 'useAutoSetup',
+      message: 'Found all required environment variables. Would you like to use them automatically?',
+      default: true
+    }]);
+
+    if (useAutoSetup) {
+      return existingEnvVars;
+    }
+  }
+
+  const { configureEnv } = await inquirer.prompt<{ configureEnv: boolean }>([{
+    type: 'confirm',
+    name: 'configureEnv',
+    message: hasAllRequired 
+      ? 'Would you like to manually configure environment variables for this package?'
+      : 'Some required environment variables are missing. Would you like to configure them now?',
+    default: !hasAllRequired
+  }]);
+
+  if (!configureEnv) {
+    if (!hasAllRequired) {
+      const configPath = getConfigPath();
+      console.log('\nNote: Some required environment variables are not configured.');
+      console.log(`You can set them later by editing the config file at:`);
+      console.log(configPath);
+    }
+    return undefined;
+  }
+
+  const envVars: Record<string, string> = {};
+  
+  for (const [key, value] of Object.entries(helpers.requiredEnvVars)) {
+    const existingEnvVar = process.env[key];
+    
+    if (existingEnvVar) {
+      const { reuseExisting } = await inquirer.prompt<{ reuseExisting: boolean }>([{
+        type: 'confirm',
+        name: 'reuseExisting',
+        message: `Found ${key} in your environment variables. Would you like to use it?`,
+        default: true
+      }]);
+
+      if (reuseExisting) {
+        envVars[key] = existingEnvVar;
+        continue;
+      }
+    }
+
+    const { envValue } = await inquirer.prompt([{
+      type: 'input',
+      name: 'envValue',
+      message: `Please enter ${value.description}:`,
+      default: value.required ? undefined : null,
+      validate: (input: string) => {
+        if (value.required && !input) {
+          return `${key} is required`;
+        }
+        return true;
+      }
+    }]);
+
+    if (envValue !== null) {
+      envVars[key] = envValue;
+    }
+  }
+
+  if (Object.keys(envVars).length === 0) {
+    const configPath = getConfigPath();
+    console.log('\nNo environment variables were configured.');
+    console.log(`You can set them later by editing the config file at:`);
+    console.log(configPath);
+    return undefined;
+  }
+
+  return envVars;
+}
 
 async function promptForRestart(): Promise<boolean> {
   const { shouldRestart } = await inquirer.prompt<{ shouldRestart: boolean }>([
@@ -51,7 +151,9 @@ async function promptForRestart(): Promise<boolean> {
 
 export async function installPackage(pkg: Package): Promise<void> {
   try {
-    installMCPServer(pkg.name);
+    const envVars = await promptForEnvVars(pkg.name);
+    
+    installMCPServer(pkg.name, envVars);
     console.log('Updated Claude desktop configuration');
     await promptForRestart();
   } catch (error) {

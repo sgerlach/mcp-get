@@ -6,8 +6,8 @@ import fuzzy from 'fuzzy';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { Package } from './types/index.js';
-import { displayPackageDetails } from './utils/display.js';
-import { installPackage } from './utils/package-management';
+import { displayPackageDetailsWithActions } from './utils/display.js';
+import { installPackage, uninstallPackage } from './utils/package-management';
 import { createInterface } from 'readline';
 import Table from 'cli-table3'; // Import cli-table3
 import stringWidth from 'string-width'; // Import string-width
@@ -71,42 +71,38 @@ export async function list() {
   }
 
   console.log(chalk.bold.white(`\nShowing ${displayPackages.length} package(s):`));
-  displayPackages.forEach(displayPackageDetails);
+  displayPackages.forEach(displayPackageDetailsWithActions);
 
   if (displayPackages.length === 1) {
     const pkg = displayPackages[0];
-    
-    // Set up readline interface to handle keypress events
-    const rl = createInterface({
-      input: process.stdin,
-      output: process.stdout
-    });
-
-    // Enable keypress events
-    process.stdin.setRawMode(true);
-    process.stdin.resume();
-
-    // Handle keypress events
-    process.stdin.on('keypress', async (str, key) => {
-      if (key.name === 'i' || key.name === 'I') {
-        rl.close();
-        process.stdin.setRawMode(false);
-        await handleAction('install', pkg);
-      } else if (key.name === 'o' || key.name === 'O') {
-        rl.close();
-        process.stdin.setRawMode(false);
-        await handleAction('open', pkg);
-      }
-    });
-
-    await promptForAction(pkg);
+    await handleSelectedPackage(pkg);
   }
 }
 
-async function handleAction(action: string, pkg: Package) {
+async function handleSelectedPackage(pkg: Package) {
+  const action = await displayPackageDetailsWithActions(pkg);
+  
   switch (action) {
     case 'install':
+      console.log(chalk.cyan(`\nPreparing to install ${pkg.name}...`));
       await installPackage(pkg);
+      break;
+    case 'uninstall':
+      const { confirmUninstall } = await inquirer.prompt<{ confirmUninstall: boolean }>([
+        {
+          type: 'confirm',
+          name: 'confirmUninstall',
+          message: `Are you sure you want to uninstall ${pkg.name}?`,
+          default: false
+        }
+      ]);
+      
+      if (confirmUninstall) {
+        await uninstallPackage(pkg.name);
+        console.log(chalk.green(`Successfully uninstalled ${pkg.name}`));
+      } else {
+        console.log('Uninstallation cancelled.');
+      }
       break;
     case 'open':
       if (pkg.sourceUrl) {
@@ -119,27 +115,11 @@ async function handleAction(action: string, pkg: Package) {
       break;
     case 'back':
       await list();
-      return; // Return to prevent showing prompt again
+      return;
     case 'exit':
       process.exit(0);
   }
-  await promptForAction(pkg);
-}
-
-async function promptForAction(pkg: Package) {
-  const { action } = await inquirer.prompt<{ action: string }>([
-    {
-      type: 'list',
-      name: 'action',
-      message: 'What would you like to do?',
-      choices: [
-        { name: 'Install package (i)', value: 'install' },
-        { name: 'Open source URL (o)', value: 'open' },
-        { name: 'Back to package list', value: 'back' },
-        { name: 'Exit', value: 'exit' }
-      ]
-    }
-  ]);
-
-  await handleAction(action, pkg);
+  
+  // Show actions again after completing an action (except for exit/back)
+  await handleSelectedPackage(pkg);
 }
