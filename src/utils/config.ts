@@ -2,12 +2,13 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
 
-interface MCPServerConfig {
+export interface MCPServerConfig {
   command: string;
   args: string[];
+  env?: Record<string, string>;
 }
 
-interface ClaudeConfig {
+export interface ClaudeConfig {
   mcpServers?: Record<string, MCPServerConfig>;
   [key: string]: any;
 }
@@ -36,9 +37,9 @@ export function writeConfig(config: ClaudeConfig): void {
   fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
 }
 
-export function installMCPServer(packageName: string): void {
+export function installMCPServer(packageName: string, env?: Record<string, string>): void {
   const config = readConfig();
-  const serverName = packageName;
+  const serverName = packageName.replace(/\//g, '-');
   
   if (!config.mcpServers) {
     config.mcpServers = {};
@@ -46,7 +47,8 @@ export function installMCPServer(packageName: string): void {
   
   config.mcpServers[serverName] = {
     command: 'npx',
-    args: ['-y', packageName]
+    args: ['-y', packageName],
+    ...(env && { env })
   };
   
   writeConfig(config);

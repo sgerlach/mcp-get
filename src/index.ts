@@ -4,6 +4,8 @@ import { install } from './install.js';
 import { list } from './list.js';
 import inquirer from 'inquirer';
 import autocomplete from 'inquirer-autocomplete-prompt';
+import { listInstalledPackages } from './installed';
+import { uninstall } from './uninstall.js';
 
 inquirer.registerPrompt('autocomplete', autocomplete);
 
@@ -19,9 +21,20 @@ switch (command) {
     }
     install(packageName);
     break;
+  case 'uninstall':
+    const pkgToUninstall = args[1];
+    if (!pkgToUninstall) {
+      console.error('Please provide a package name to uninstall.');
+      process.exit(1);
+    }
+    uninstall(pkgToUninstall);
+    break;
   case 'ls':
   case 'list':
     list();
+    break;
+  case 'installed':
+    listInstalledPackages();
     break;
   default:
     console.error(`Unknown command: ${command}`);

@@ -7,7 +7,7 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { Package } from './types/index.js';
 import { displayPackageDetails } from './utils/display.js';
-import { installPackage } from './install.js';
+import { installPackage } from './utils/package-management';
 import { createInterface } from 'readline';
 import Table from 'cli-table3'; // Import cli-table3
 import stringWidth from 'string-width'; // Import string-width

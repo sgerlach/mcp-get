@@ -4,26 +4,106 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { Package } from './types/index.js';
 import { installMCPServer } from './utils/config';
+import inquirer from 'inquirer';
+import { exec } from 'child_process';
+import { promisify } from 'util';
+import { packageHelpers } from './helpers';
+
+const execAsync = promisify(exec);
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const packageListPath = join(__dirname, '../packages/package-list.json');
 
-export async function installPackage(packageName: string): Promise<void> {
+async function handlePackageHelper(packageName: string): Promise<Record<string, string> | undefined> {
+  const helper = packageHelpers[packageName];
+  if (!helper?.requiredEnvVars) return undefined;
+
+  const envVars: Record<string, string> = {};
+  
+  for (const [envVar, config] of Object.entries(helper.requiredEnvVars)) {
+    const envConfig = config as { description: string; required: boolean };
+    const existingValue = process.env[envVar];
+    
+    if (existingValue) {
+      const { useExisting } = await inquirer.prompt<{ useExisting: boolean }>([{
+        type: 'confirm',
+        name: 'useExisting',
+        message: `Found existing ${envVar} in your environment. Would you like to use it?`,
+        default: true
+      }]);
+      
+      if (useExisting) {
+        envVars[envVar] = existingValue;
+        continue;
+      }
+    }
+
+    if (envConfig.required) {
+      const { value, configure } = await inquirer.prompt([
+        {
+          type: 'confirm',
+          name: 'configure',
+          message: `${envVar} is required for ${packageName}. Would you like to configure it now?`,
+          default: true
+        },
+        {
+          type: 'input',
+          name: 'value',
+          message: `Please enter your ${envVar} (${envConfig.description}):`,
+          when: (answers) => answers.configure
+        }
+      ]);
+
+      if (configure && value) {
+        envVars[envVar] = value;
+      } else if (envConfig.required) {
+        console.log(`\nSkipping ${envVar} configuration. You'll need to set it in your environment before using ${packageName}.`);
+      }
+    }
+  }
+  
+  return Object.keys(envVars).length > 0 ? envVars : undefined;
+}
+
+export async function installPackage(pkg: Package | string): Promise<void> {
   try {
-    console.log(`Installing package: ${packageName}`);
-    console.log(`Description: ${packageName}`);
-    console.log(`Vendor: ${packageName}`);
-    console.log(`Source URL: ${packageName}`);
-    console.log(`License: ${packageName}`);
+    const packageName = typeof pkg === 'string' ? pkg : pkg.name;
+    
+    // Handle package-specific configuration and get environment variables
+    const env = await handlePackageHelper(packageName);
+    
+    // After successful installation, update the config with env variables
+    installMCPServer(packageName, env);
+    console.log('Updated Claude desktop configuration');
+    
+    // Prompt user about restarting Claude
+    const { shouldRestart } = await inquirer.prompt<{ shouldRestart: boolean }>([
+      {
+        type: 'confirm',
+        name: 'shouldRestart',
+        message: 'Would you like to restart the Claude desktop app to apply changes?',
+        default: true
+      }
+    ]);
 
-    // Here you can add the logic to download and install the package from the sourceUrl
-
-    // After successful installation, update the config
-    if (packageName.startsWith('@modelcontextprotocol/server-')) {
-      installMCPServer(packageName);
-      console.log('Updated Claude desktop configuration');
+    if (shouldRestart) {
+      console.log('Restarting Claude desktop app...');
+      try {
+        // Kill existing Claude process
+        await execAsync('pkill -x Claude || true');
+        // Wait 2 seconds before restarting
+        console.log('Waiting for Claude to close...');
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        // Start Claude again
+        await execAsync('open -a Claude');
+        console.log('Claude desktop app has been restarted');
+      } catch (error) {
+        console.warn('Failed to restart Claude desktop app automatically. Please restart it manually.');
+      }
+    } else {
+      console.log('Please restart the Claude desktop app manually to apply changes.');
     }
     
   } catch (error) {
@@ -37,9 +117,26 @@ export async function install(packageName: string): Promise<void> {
 
   const pkg = packageList.find(p => p.name === packageName);
   if (!pkg) {
-    console.error(`Package ${packageName} not found.`);
-    process.exit(1);
+    console.warn(`Package ${packageName} not found in the curated list.`);
+    
+    const { proceedWithInstall } = await inquirer.prompt<{ proceedWithInstall: boolean }>([
+      {
+        type: 'confirm',
+        name: 'proceedWithInstall',
+        message: `Would you like to try installing ${packageName} anyway? This package hasn't been verified.`,
+        default: false
+      }
+    ]);
+
+    if (proceedWithInstall) {
+      console.log(`Proceeding with installation of ${packageName}...`);
+      await installPackage(packageName);
+    } else {
+      console.log('Installation cancelled.');
+      process.exit(1);
+    }
+    return;
   }
 
-  await installPackage(pkg.name);
+  await installPackage(pkg);
 }

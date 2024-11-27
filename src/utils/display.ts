@@ -44,4 +44,8 @@ export function displayPackageDetails(pkg: Package) {
 
   console.log(chalk.gray('└' + horizontalLine + '┘'));
   console.log(''); // Add spacing between packages
+}
+
+export function formatPackageInfo(pkg: Package): string {
+  return `${pkg.name} - ${pkg.description} (${pkg.vendor})`;
 } 
