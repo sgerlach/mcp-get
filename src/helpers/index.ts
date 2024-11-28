@@ -48,5 +48,13 @@ export const packageHelpers: PackageHelpers = {
         required: true
       }
     }
+  },
+  '@raygun.io/mcp-server-raygun': {
+    requiredEnvVars: {
+      RAYGUN_PAT_TOKEN: {
+        description: 'Personal access token for Raygun API access',
+        required: true
+      }
+    }
   }
-}; 
+};
