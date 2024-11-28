@@ -94,5 +94,13 @@
     "sourceUrl": "https://github.com/cloudflare/mcp-server-cloudflare",
     "homepage": "https://github.com/cloudflare/mcp-server-cloudflare",
     "license": "MIT"
+  },
+  {
+    "name": "@raygun.io/mcp-server-raygun",
+    "description": "MCP server for interacting with Raygun's API for crash reporting and real user monitoring metrics",
+    "vendor": "Raygun (https://raygun.com)",
+    "sourceUrl": "https://github.com/MindscapeHQ/mcp-server-raygun",
+    "homepage": "https://raygun.com",
+    "license": "MIT"
   }
 ]
