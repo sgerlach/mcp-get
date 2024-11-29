@@ -124,8 +124,10 @@ To add your own MCP server to the registry, follow these steps:
 
 3. **Update the Registry**: Add your server details to the `packages/package-list.json` file in the repository. Ensure the details are accurate and follow the required format.
 
-4. **Submit a Pull Request**: Fork the repository, make your changes, and submit a pull request with a clear description of your MCP server and its functionalities.
+4. **Add to Helpers**: If your MCP server requires specific environment variables or configurations, add the necessary helper configurations to the `src/helpers/index.ts` file.
 
-5. **Review and Merge**: The maintainers will review your pull request. If everything is in order, your MCP server will be added to the registry.
+5. **Submit a Pull Request**: Fork the repository, make your changes, and submit a pull request with a clear description of your MCP server and its functionalities.
+
+6. **Review and Merge**: The maintainers will review your pull request. If everything is in order, your MCP server will be added to the registry.
 
 Once your changes are merged, they will automatically be published to NPM and available for users.
