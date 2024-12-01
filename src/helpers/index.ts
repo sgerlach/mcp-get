@@ -56,5 +56,29 @@ export const packageHelpers: PackageHelpers = {
         required: true
       }
     }
+  },
+  '@kagi/mcp-server-kagi': {
+    requiredEnvVars: {
+      KAGI_API_KEY: {
+        description: 'API key for Kagi Search',
+        required: true
+      }
+    }
+  },
+  '@exa/mcp-server': {
+    requiredEnvVars: {
+      EXA_API_KEY: {
+        description: 'API key for Exa AI Search',
+        required: true
+      }
+    }
+  },
+  '@search1api/mcp-server': {
+    requiredEnvVars: {
+      SEARCH1API_KEY: {
+        description: 'API key for Search1API',
+        required: true
+      }
+    }
   }
 };

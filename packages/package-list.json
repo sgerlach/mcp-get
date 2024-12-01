@@ -110,5 +110,45 @@
     "sourceUrl": "https://github.com/kimtaeyoon83/mcp-server-youtube-transcript",
     "homepage": "https://github.com/kimtaeyoon83/mcp-server-youtube-transcript",
     "license": "MIT"
+  },
+  {
+    "name": "@kagi/mcp-server-kagi",
+    "description": "MCP server for Kagi search API integration",
+    "vendor": "ac3xx (https://github.com/ac3xx)",
+    "sourceUrl": "https://github.com/ac3xx/mcp-servers-kagi",
+    "homepage": "https://github.com/ac3xx/mcp-servers-kagi",
+    "license": "MIT"
+  },
+  {
+    "name": "@exa/mcp-server",
+    "description": "MCP server for Exa AI Search API integration",
+    "vendor": "Exa Labs (https://exa.ai)",
+    "sourceUrl": "https://github.com/exa-labs/exa-mcp-server",
+    "homepage": "https://exa.ai",
+    "license": "MIT"
+  },
+  {
+    "name": "@search1api/mcp-server",
+    "description": "MCP server for Search1API integration",
+    "vendor": "fatwang2 (https://github.com/fatwang2)",
+    "sourceUrl": "https://github.com/fatwang2/search1api-mcp",
+    "homepage": "https://github.com/fatwang2/search1api-mcp",
+    "license": "MIT"
+  },
+  {
+    "name": "@calclavia/mcp-obsidian",
+    "description": "MCP server for reading and searching Markdown notes (like Obsidian vaults)",
+    "vendor": "Calclavia (https://github.com/calclavia)",
+    "sourceUrl": "https://github.com/calclavia/mcp-obsidian",
+    "homepage": "https://github.com/calclavia/mcp-obsidian",
+    "license": "MIT"
+  },
+  {
+    "name": "@anaisbetts/mcp-youtube",
+    "description": "MCP server for fetching YouTube subtitles",
+    "vendor": "Anaïs Betts (https://github.com/anaisbetts)",
+    "sourceUrl": "https://github.com/anaisbetts/mcp-youtube",
+    "homepage": "https://github.com/anaisbetts/mcp-youtube",
+    "license": "MIT"
   }
 ]
