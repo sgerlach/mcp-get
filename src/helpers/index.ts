@@ -80,5 +80,17 @@ export const packageHelpers: PackageHelpers = {
         required: true
       }
     }
+  },
+  'mcp-tinybird': {
+    requiredEnvVars: {
+      TB_API_URL: {
+        description: 'API URL for Tinybird',
+        required: true
+      },
+      TB_ADMIN_TOKEN: {
+        description: 'Admin token for Tinybird',
+        required: true
+      }
+    }
   }
 };
