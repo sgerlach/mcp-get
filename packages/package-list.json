@@ -5,7 +5,8 @@
     "vendor": "Anthropic, PBC (https://anthropic.com)",
     "sourceUrl": "https://github.com/modelcontextprotocol/servers/blob/main/src/brave-search",
     "homepage": "https://modelcontextprotocol.io",
-    "license": "MIT"
+    "license": "MIT",
+    "runtime": "node"
   },
   {
     "name": "@modelcontextprotocol/server-everything",
@@ -13,7 +14,8 @@
     "vendor": "Anthropic, PBC (https://anthropic.com)",
     "sourceUrl": "https://github.com/modelcontextprotocol/servers/blob/main/src/everything",
     "homepage": "https://modelcontextprotocol.io",
-    "license": "MIT"
+    "license": "MIT",
+    "runtime": "node"
   },
   {
     "name": "@modelcontextprotocol/server-filesystem",
@@ -21,7 +23,8 @@
     "vendor": "Anthropic, PBC (https://anthropic.com)",
     "sourceUrl": "https://github.com/modelcontextprotocol/servers/blob/main/src/filesystem",
     "homepage": "https://modelcontextprotocol.io",
-    "license": "MIT"
+    "license": "MIT",
+    "runtime": "node"
   },
   {
     "name": "@modelcontextprotocol/server-gdrive",
@@ -29,7 +32,8 @@
     "vendor": "Anthropic, PBC (https://anthropic.com)",
     "sourceUrl": "https://github.com/modelcontextprotocol/servers/blob/main/src/gdrive",
     "homepage": "https://modelcontextprotocol.io",
-    "license": "MIT"
+    "license": "MIT",
+    "runtime": "node"
   },
   {
     "name": "@modelcontextprotocol/server-github",
@@ -37,7 +41,8 @@
     "vendor": "Anthropic, PBC (https://anthropic.com)",
     "sourceUrl": "https://github.com/modelcontextprotocol/servers/blob/main/src/github",
     "homepage": "https://modelcontextprotocol.io",
-    "license": "MIT"
+    "license": "MIT",
+    "runtime": "node"
   },
   {
     "name": "@modelcontextprotocol/server-gitlab",
@@ -45,7 +50,8 @@
     "vendor": "GitLab, PBC (https://gitlab.com)",
     "sourceUrl": "https://github.com/modelcontextprotocol/servers/blob/main/src/gitlab",
     "homepage": "https://modelcontextprotocol.io",
-    "license": "MIT"
+    "license": "MIT",
+    "runtime": "node"
   },
   {
     "name": "@modelcontextprotocol/server-google-maps",
@@ -53,7 +59,8 @@
     "vendor": "Anthropic, PBC (https://anthropic.com)",
     "sourceUrl": "https://github.com/modelcontextprotocol/servers/blob/main/src/google-maps",
     "homepage": "https://modelcontextprotocol.io",
-    "license": "MIT"
+    "license": "MIT",
+    "runtime": "node"
   },
   {
     "name": "@modelcontextprotocol/server-memory",
@@ -61,7 +68,8 @@
     "vendor": "Anthropic, PBC (https://anthropic.com)",
     "sourceUrl": "https://github.com/modelcontextprotocol/servers/blob/main/src/memory",
     "homepage": "https://modelcontextprotocol.io",
-    "license": "MIT"
+    "license": "MIT",
+    "runtime": "node"
   },
   {
     "name": "@modelcontextprotocol/server-postgres",
@@ -69,7 +77,8 @@
     "vendor": "Anthropic, PBC (https://anthropic.com)",
     "sourceUrl": "https://github.com/modelcontextprotocol/servers/blob/main/src/postgres",
     "homepage": "https://modelcontextprotocol.io",
-    "license": "MIT"
+    "license": "MIT",
+    "runtime": "node"
   },
   {
     "name": "@modelcontextprotocol/server-puppeteer",
@@ -77,7 +86,8 @@
     "vendor": "Anthropic, PBC (https://anthropic.com)",
     "sourceUrl": "https://github.com/modelcontextprotocol/servers/blob/main/src/puppeteer",
     "homepage": "https://modelcontextprotocol.io",
-    "license": "MIT"
+    "license": "MIT",
+    "runtime": "node"
   },
   {
     "name": "@modelcontextprotocol/server-slack",
@@ -85,7 +95,8 @@
     "vendor": "Anthropic, PBC (https://anthropic.com)",
     "sourceUrl": "https://github.com/modelcontextprotocol/servers/blob/main/src/slack",
     "homepage": "https://modelcontextprotocol.io",
-    "license": "MIT"
+    "license": "MIT",
+    "runtime": "node"
   },
   {
     "name": "@cloudflare/mcp-server-cloudflare",
@@ -93,7 +104,8 @@
     "vendor": "Cloudflare, Inc. (https://cloudflare.com)",
     "sourceUrl": "https://github.com/cloudflare/mcp-server-cloudflare",
     "homepage": "https://github.com/cloudflare/mcp-server-cloudflare",
-    "license": "MIT"
+    "license": "MIT",
+    "runtime": "node"
   },
   {
     "name": "@raygun.io/mcp-server-raygun",
@@ -101,7 +113,8 @@
     "vendor": "Raygun (https://raygun.com)",
     "sourceUrl": "https://github.com/MindscapeHQ/mcp-server-raygun",
     "homepage": "https://raygun.com",
-    "license": "MIT"
+    "license": "MIT",
+    "runtime": "node"
   },
   {
     "name": "@kimtaeyoon83/mcp-server-youtube-transcript",
@@ -109,7 +122,8 @@
     "vendor": "Freddie (https://github.com/kimtaeyoon83)",
     "sourceUrl": "https://github.com/kimtaeyoon83/mcp-server-youtube-transcript",
     "homepage": "https://github.com/kimtaeyoon83/mcp-server-youtube-transcript",
-    "license": "MIT"
+    "license": "MIT",
+    "runtime": "node"
   },
   {
     "name": "@kagi/mcp-server-kagi",
@@ -117,7 +131,8 @@
     "vendor": "ac3xx (https://github.com/ac3xx)",
     "sourceUrl": "https://github.com/ac3xx/mcp-servers-kagi",
     "homepage": "https://github.com/ac3xx/mcp-servers-kagi",
-    "license": "MIT"
+    "license": "MIT",
+    "runtime": "node"
   },
   {
     "name": "@exa/mcp-server",
@@ -125,7 +140,8 @@
     "vendor": "Exa Labs (https://exa.ai)",
     "sourceUrl": "https://github.com/exa-labs/exa-mcp-server",
     "homepage": "https://exa.ai",
-    "license": "MIT"
+    "license": "MIT",
+    "runtime": "node"
   },
   {
     "name": "@search1api/mcp-server",
@@ -133,7 +149,8 @@
     "vendor": "fatwang2 (https://github.com/fatwang2)",
     "sourceUrl": "https://github.com/fatwang2/search1api-mcp",
     "homepage": "https://github.com/fatwang2/search1api-mcp",
-    "license": "MIT"
+    "license": "MIT",
+    "runtime": "node"
   },
   {
     "name": "@calclavia/mcp-obsidian",
@@ -141,7 +158,8 @@
     "vendor": "Calclavia (https://github.com/calclavia)",
     "sourceUrl": "https://github.com/calclavia/mcp-obsidian",
     "homepage": "https://github.com/calclavia/mcp-obsidian",
-    "license": "MIT"
+    "license": "MIT",
+    "runtime": "node"
   },
   {
     "name": "@anaisbetts/mcp-youtube",
@@ -149,7 +167,8 @@
     "vendor": "Anaïs Betts (https://github.com/anaisbetts)",
     "sourceUrl": "https://github.com/anaisbetts/mcp-youtube",
     "homepage": "https://github.com/anaisbetts/mcp-youtube",
-    "license": "MIT"
+    "license": "MIT",
+    "runtime": "node"
   },
   {
     "name": "@modelcontextprotocol/server-everart",
@@ -157,7 +176,8 @@
     "vendor": "Anthropic, PBC (https://anthropic.com)",
     "sourceUrl": "https://github.com/modelcontextprotocol/servers/blob/main/src/everart",
     "homepage": "https://modelcontextprotocol.io",
-    "license": "MIT"
+    "license": "MIT",
+    "runtime": "node"
   },
   {
     "name": "@modelcontextprotocol/server-sequential-thinking",
@@ -165,6 +185,52 @@
     "vendor": "Anthropic, PBC (https://anthropic.com)",
     "sourceUrl": "https://github.com/modelcontextprotocol/servers/blob/main/src/sequentialthinking",
     "homepage": "https://modelcontextprotocol.io",
-    "license": "MIT"
+    "license": "MIT",
+    "runtime": "node"
+  },
+  {
+    "name": "mcp-server-fetch",
+    "description": "A Model Context Protocol server providing tools to fetch and convert web content for usage by LLMs",
+    "vendor": "Anthropic, PBC.",
+    "sourceUrl": "https://github.com/modelcontextprotocol/servers/blob/main/src/fetch",
+    "homepage": "https://github.com/modelcontextprotocol/servers",
+    "license": "MIT",
+    "runtime": "python"
+  },
+  {
+    "name": "mcp-server-git",
+    "description": "A Model Context Protocol server providing tools to read, search, and manipulate Git repositories programmatically via LLMs",
+    "vendor": "Anthropic, PBC.",
+    "sourceUrl": "https://github.com/modelcontextprotocol/servers/blob/main/src/git",
+    "homepage": "https://github.com/modelcontextprotocol/servers",
+    "license": "MIT",
+    "runtime": "python"
+  },
+  {
+    "name": "mcp-server-sentry",
+    "description": "MCP server for retrieving issues from sentry.io",
+    "vendor": "Unknown",
+    "sourceUrl": "https://github.com/modelcontextprotocol/servers/blob/main/src/sentry",
+    "homepage": "https://github.com/modelcontextprotocol/servers",
+    "license": "Unknown",
+    "runtime": "python"
+  },
+  {
+    "name": "mcp-server-sqlite",
+    "description": "A simple SQLite MCP server",
+    "vendor": "Unknown",
+    "sourceUrl": "https://github.com/modelcontextprotocol/servers/blob/main/src/sqlite",
+    "homepage": "https://github.com/modelcontextprotocol/servers",
+    "license": "Unknown",
+    "runtime": "python"
+  },
+  {
+    "name": "mcp-server-time",
+    "description": "A Model Context Protocol server providing tools for time queries and timezone conversions for LLMs",
+    "vendor": "Mariusz 'maledorak' Korzekwa",
+    "sourceUrl": "https://github.com/modelcontextprotocol/servers/blob/main/src/time",
+    "homepage": "https://github.com/modelcontextprotocol/servers",
+    "license": "MIT",
+    "runtime": "python"
   }
 ]

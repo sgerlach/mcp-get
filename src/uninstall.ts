@@ -4,7 +4,7 @@ import { readFileSync } from 'fs';
 import { join } from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import { Package } from './types';
+import { Package } from './types/index.js';
 import { uninstallPackage } from './utils/package-management.js';
 import { displayPackageDetailsWithActions } from './utils/display.js';
 import { list } from './list.js';

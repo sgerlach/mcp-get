@@ -4,6 +4,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import * as TOML from '@iarna/toml';
 
 const execAsync = promisify(exec);
 const __filename = fileURLToPath(import.meta.url);
@@ -16,12 +17,112 @@ interface PackageInfo {
   sourceUrl: string;
   homepage: string;
   license: string;
+  runtime?: 'node' | 'python';
+}
+
+interface RepoConfig {
+  url: string;
+  branch: string;
+  packagePath: string;
+  runtime: 'node' | 'python' | 'mixed';
+}
+
+interface PyProjectToml {
+  project?: {
+    name?: string;
+    description?: string;
+    authors?: Array<{ name: string; email?: string }>;
+    maintainers?: Array<{ name: string; email?: string }>;
+    license?: { text: string } | string;
+    homepage?: string;
+    repository?: string;
+  };
+}
+
+const REPOS: RepoConfig[] = [
+  {
+    url: 'https://github.com/modelcontextprotocol/servers.git',
+    branch: 'main',
+    packagePath: 'src',
+    runtime: 'mixed'
+  }
+];
+
+async function cloneRepo(config: RepoConfig, tempDir: string): Promise<void> {
+  const repoDir = path.join(tempDir, path.basename(config.url, '.git'));
+  console.log(`Cloning ${config.url} into ${repoDir}...`);
+  
+  await execAsync(
+    `git clone --depth 1 --branch ${config.branch} ${config.url} ${repoDir}`,
+    { cwd: tempDir }
+  );
+  
+  return;
+}
+
+async function extractNodePackage(packageJsonPath: string, repoUrl: string, subPath: string): Promise<PackageInfo | null> {
+  try {
+    const packageData = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+    const repoPath = `${repoUrl}/blob/main/${subPath}`;
+    
+    return {
+      name: packageData.name || '',
+      description: packageData.description || '',
+      vendor: packageData.author || '',
+      sourceUrl: repoPath,
+      homepage: packageData.homepage || '',
+      license: packageData.license || '',
+      runtime: 'node'
+    };
+  } catch (error) {
+    console.error(`Error extracting Node package from ${packageJsonPath}:`, error);
+    return null;
+  }
+}
+
+async function extractPythonPackage(pyprojectPath: string, repoUrl: string, subPath: string): Promise<PackageInfo | null> {
+  try {
+    const pyprojectContent = fs.readFileSync(pyprojectPath, 'utf8');
+    const pyproject = TOML.parse(pyprojectContent) as PyProjectToml;
+    
+    if (!pyproject.project) {
+      console.error(`No [project] section found in ${pyprojectPath}`);
+      return null;
+    }
+
+    const { project } = pyproject;
+    
+    // Get the first author/maintainer for vendor info
+    const vendor = project.authors?.[0]?.name || 
+                  project.maintainers?.[0]?.name || 
+                  'Unknown';
+    
+    // Handle license field which can be either a string or an object
+    const license = typeof project.license === 'string' 
+      ? project.license 
+      : project.license?.text || 'Unknown';
+
+    return {
+      name: project.name || '',
+      description: project.description || '',
+      vendor,
+      sourceUrl: `${repoUrl}/blob/main/${subPath}`,
+      homepage: project.homepage || project.repository || repoUrl,
+      license,
+      runtime: 'python'
+    };
+  } catch (error) {
+    console.error(`Error extracting Python package from ${pyprojectPath}:`, error);
+    return null;
+  }
 }
 
 export async function extractPackageInfo(): Promise<PackageInfo[]> {
   const tempDir = path.join(__dirname, '../../temp');
   const outputPath = path.join(__dirname, '../../packages/package-list.json');
   const commitMsgPath = path.join(__dirname, '../../temp/commit-msg.txt');
+
+  console.log("Starting package extraction...");
 
   try {
     // Load existing packages
@@ -39,34 +140,49 @@ export async function extractPackageInfo(): Promise<PackageInfo[]> {
     let commitMsg = "chore(packages): update MCP package list\n\nChanges:\n";
     let changes: string[] = [];
 
-    // Clone the repository
-    console.log('Cloning repository...');
-    await execAsync(
-      'git clone https://github.com/modelcontextprotocol/servers.git temp',
-      { cwd: path.join(__dirname, '../..') }
-    );
-
-    // Read all directories in src
-    const srcPath = path.join(tempDir, 'src');
+    // Process each repository
     const newPackages: PackageInfo[] = [];
-
-    const dirs = fs.readdirSync(srcPath);
     
-    for (const dir of dirs) {
-      const packageJsonPath = path.join(srcPath, dir, 'package.json');
+    for (const repo of REPOS) {
+      await cloneRepo(repo, tempDir);
       
-      if (fs.existsSync(packageJsonPath)) {
-        const packageData = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
-        const repoPath = `https://github.com/modelcontextprotocol/servers/blob/main/src/${dir}`;
+      const repoDir = path.join(tempDir, path.basename(repo.url, '.git'));
+      const packagePath = path.join(repoDir, repo.packagePath);
+      
+      if (!fs.existsSync(packagePath)) continue;
+      
+      const dirs = fs.readdirSync(packagePath);
+      
+      for (const dir of dirs) {
+        const fullPath = path.join(packagePath, dir);
+        if (!fs.statSync(fullPath).isDirectory()) continue;
         
-        newPackages.push({
-          name: packageData.name || '',
-          description: packageData.description || '',
-          vendor: packageData.author || '',
-          sourceUrl: repoPath,
-          homepage: packageData.homepage || '',
-          license: packageData.license || ''
-        });
+        // Try to extract as Node.js package
+        const packageJsonPath = path.join(fullPath, 'package.json');
+        if (fs.existsSync(packageJsonPath)) {
+          const nodePackage = await extractNodePackage(
+            packageJsonPath,
+            repo.url.replace('.git', ''),
+            path.join(repo.packagePath, dir)
+          );
+          if (nodePackage) {
+            newPackages.push(nodePackage);
+            continue;
+          }
+        }
+
+        // Try to extract as Python package
+        const pyprojectPath = path.join(fullPath, 'pyproject.toml');
+        if (fs.existsSync(pyprojectPath)) {
+          const pythonPackage = await extractPythonPackage(
+            pyprojectPath,
+            repo.url.replace('.git', ''),
+            path.join(repo.packagePath, dir)
+          );
+          if (pythonPackage) {
+            newPackages.push(pythonPackage);
+          }
+        }
       }
     }
 
@@ -91,6 +207,7 @@ export async function extractPackageInfo(): Promise<PackageInfo[]> {
           if (oldPkg.license !== newPkg.license) changeDetails.push('license');
           if (oldPkg.homepage !== newPkg.homepage) changeDetails.push('homepage');
           if (oldPkg.sourceUrl !== newPkg.sourceUrl) changeDetails.push('sourceUrl');
+          if (oldPkg.runtime !== newPkg.runtime) changeDetails.push('runtime');
           
           changes.push(`- Updated ${newPkg.name} (changed: ${changeDetails.join(', ')})`);
         }
@@ -98,8 +215,8 @@ export async function extractPackageInfo(): Promise<PackageInfo[]> {
         // Add new package
         mergedPackages.push(newPkg);
         hasChanges = true;
-        console.log(`Added new package: ${newPkg.name}`);
-        changes.push(`- Added new package: ${newPkg.name}`);
+        console.log(`Added new package: ${newPkg.name} (${newPkg.runtime})`);
+        changes.push(`- Added new package: ${newPkg.name} (${newPkg.runtime})`);
       }
     }
 

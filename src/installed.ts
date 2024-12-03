@@ -3,7 +3,7 @@ import chalk from 'chalk';
 import { readConfig } from './utils/config.js';
 import { displayPackageDetailsWithActions } from './utils/display.js';
 import { uninstallPackage } from './utils/package-management.js';
-import { Package } from './types';
+import { Package } from './types/index.js';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import { fileURLToPath } from 'url';

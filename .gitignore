@@ -27,6 +27,7 @@ temp/
 tmp/
 *.tmp
 *.temp
+extract_ref/
 
 # Logs
 logs/

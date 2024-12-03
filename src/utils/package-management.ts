@@ -1,9 +1,14 @@
 import inquirer from 'inquirer';
-import { Package } from '../types';
+import { Package } from '../types/index.js';
 import { getConfigPath, installMCPServer, readConfig, writeConfig } from './config.js';
 import { exec } from 'child_process';
 import { promisify } from 'util';
 import { packageHelpers } from '../helpers/index.js';
+import { checkUVInstalled, promptForUVInstall } from './runtime-utils.js';
+import path from 'path';
+import fs from 'fs';
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
 
 const execAsync = promisify(exec);
 
@@ -151,9 +156,20 @@ async function promptForRestart(): Promise<boolean> {
 
 export async function installPackage(pkg: Package): Promise<void> {
   try {
+    // Check for UV if it's a Python package
+    if (pkg.runtime === 'python') {
+      const hasUV = await checkUVInstalled();
+      if (!hasUV) {
+        const installed = await promptForUVInstall(inquirer);
+        if (!installed) {
+          console.log('Proceeding with installation, but uvx commands may fail...');
+        }
+      }
+    }
+
     const envVars = await promptForEnvVars(pkg.name);
     
-    installMCPServer(pkg.name, envVars);
+    installMCPServer(pkg.name, envVars, pkg.runtime);
     console.log('Updated Claude desktop configuration');
     await promptForRestart();
   } catch (error) {
@@ -181,4 +197,26 @@ export async function uninstallPackage(packageName: string): Promise<void> {
     console.error('Failed to uninstall package:', error);
     throw error;
   }
+}
+
+export function isPackageInstalled(packageName: string): boolean {
+  const config = readConfig();
+  return packageName in (config.mcpServers || {});
+}
+
+export function getPackageDetails(packageName: string): Package {
+  // Read package list from JSON file
+  const packageListPath = path.join(dirname(fileURLToPath(import.meta.url)), '../../packages/package-list.json');
+  const packages: Package[] = JSON.parse(fs.readFileSync(packageListPath, 'utf8'));
+  
+  // Find the package
+  const pkg = packages.find(p => p.name === packageName);
+  if (!pkg) {
+    throw new Error(`Package ${packageName} not found`);
+  }
+
+  return {
+    ...pkg,
+    isInstalled: isPackageInstalled(packageName)
+  };
 } 

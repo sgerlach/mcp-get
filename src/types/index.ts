@@ -5,6 +5,8 @@ export interface Package {
   sourceUrl: string;
   homepage: string;
   license: string;
+  runtime: 'node' | 'python';
+  isInstalled?: boolean;
 }
 
 export interface PackageHelper {
@@ -12,9 +14,11 @@ export interface PackageHelper {
     [key: string]: {
       description: string;
       required: boolean;
+      argName?: string;
     }
   };
   configureEnv?: (config: any) => Promise<void>;
+  runtime?: 'node' | 'python';
 }
 
 export interface PackageHelpers {

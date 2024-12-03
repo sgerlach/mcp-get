@@ -7,7 +7,7 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { Package } from './types/index.js';
 import { displayPackageDetailsWithActions } from './utils/display.js';
-import { installPackage, uninstallPackage } from './utils/package-management.js';
+import { installPackage, uninstallPackage, isPackageInstalled } from './utils/package-management.js';
 import { createInterface } from 'readline';
 import Table from 'cli-table3'; // Import cli-table3
 import stringWidth from 'string-width'; // Import string-width
@@ -24,7 +24,10 @@ export async function list() {
   let packages: Package[];
   try {
     const data = fs.readFileSync(packageListPath, 'utf8');
-    packages = JSON.parse(data);
+    packages = JSON.parse(data).map((pkg: Package) => ({
+      ...pkg,
+      isInstalled: isPackageInstalled(pkg.name)
+    }));
     if (!Array.isArray(packages)) {
       throw new Error('Package list is not an array');
     }
@@ -38,7 +41,7 @@ export async function list() {
 
   // Prepare choices for inquirer using table-like format
   const choices = packages.map((pkg, index) => ({
-    name: `${pkg.name.padEnd(24)} │ ${
+    name: `${pkg.isInstalled ? '✓ ' : '  '}${pkg.name.padEnd(22)} │ ${
       pkg.description.length > 47 ? `${pkg.description.slice(0, 44)}...` : pkg.description.padEnd(49)
     } │ ${pkg.vendor.padEnd(19)} │ ${pkg.license.padEnd(14)}`,
     value: pkg,
