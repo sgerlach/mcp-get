@@ -169,7 +169,7 @@ export async function installPackage(pkg: Package): Promise<void> {
 
     const envVars = await promptForEnvVars(pkg.name);
     
-    installMCPServer(pkg.name, envVars, pkg.runtime);
+    await installMCPServer(pkg.name, envVars, pkg.runtime);
     console.log('Updated Claude desktop configuration');
     await promptForRestart();
   } catch (error) {
