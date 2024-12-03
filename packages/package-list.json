@@ -232,5 +232,14 @@
     "homepage": "https://github.com/modelcontextprotocol/servers",
     "license": "MIT",
     "runtime": "python"
+  },
+  {
+    "name": "mcp-tinybird",
+    "description": "A Model Context Protocol server that lets you interact with a Tinybird Workspace from any MCP client.",
+    "vendor": "Tinybird (https://tinybird.co)",
+    "sourceUrl": "https://github.com/tinybirdco/mcp-tinybird/tree/main/src/mcp-tinybird",
+    "homepage": "https://github.com/tinybirdco/mcp-tinybird",
+    "license": "Apache 2.0",
+    "runtime": "python"
   }
 ]
