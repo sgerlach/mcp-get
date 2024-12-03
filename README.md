@@ -15,18 +15,17 @@ This tool helps you install and manage MCP servers that connect Claude to variou
 - **Development Tools**: GitHub, GitLab
 - **Communication Tools**: Slack
 - **Search & Data**: Brave Search, Google Maps
-- **Database Systems**: PostgreSQL
+- **Database Systems**: PostgreSQL, SQLite
 - **Web Automation**: Puppeteer
 - **Cloud Storage**: Google Drive
 
 ## Prerequisites
 
 - Node.js (version 14 or higher)
+- Python (version 3.10 or higher) for Python-based MCP servers
 - Claude Desktop app (for local MCP server usage)
 
 > **Note**: This tool has not been thoroughly tested on Windows systems yet. While it may work, you might encounter some issues. Contributions to improve Windows compatibility are welcome!
-
-> **Note**: Currently, only NPX servers are supported. Pull requests are welcome to support Python servers.
 
 ## Usage Examples
 
