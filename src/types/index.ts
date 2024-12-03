@@ -1,11 +1,11 @@
 export interface Package {
   name: string;
   description: string;
+  runtime: 'node' | 'python';
   vendor: string;
   sourceUrl: string;
   homepage: string;
   license: string;
-  runtime: 'node' | 'python';
   isInstalled?: boolean;
 }
 

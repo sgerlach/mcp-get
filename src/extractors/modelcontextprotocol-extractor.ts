@@ -92,15 +92,11 @@ async function extractPythonPackage(pyprojectPath: string, repoUrl: string, subP
 
     const { project } = pyproject;
     
-    // Get the first author/maintainer for vendor info
-    const vendor = project.authors?.[0]?.name || 
-                  project.maintainers?.[0]?.name || 
-                  'Unknown';
+    // Set vendor to Anthropic
+    const vendor = 'Anthropic, PBC (https://anthropic.com)';
     
-    // Handle license field which can be either a string or an object
-    const license = typeof project.license === 'string' 
-      ? project.license 
-      : project.license?.text || 'Unknown';
+    // Set license to MIT
+    const license = 'MIT';
 
     return {
       name: project.name || '',

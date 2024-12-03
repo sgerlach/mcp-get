@@ -191,7 +191,7 @@
   {
     "name": "mcp-server-fetch",
     "description": "A Model Context Protocol server providing tools to fetch and convert web content for usage by LLMs",
-    "vendor": "Anthropic, PBC.",
+    "vendor": "Anthropic, PBC (https://anthropic.com)",
     "sourceUrl": "https://github.com/modelcontextprotocol/servers/blob/main/src/fetch",
     "homepage": "https://github.com/modelcontextprotocol/servers",
     "license": "MIT",
@@ -200,7 +200,7 @@
   {
     "name": "mcp-server-git",
     "description": "A Model Context Protocol server providing tools to read, search, and manipulate Git repositories programmatically via LLMs",
-    "vendor": "Anthropic, PBC.",
+    "vendor": "Anthropic, PBC (https://anthropic.com)",
     "sourceUrl": "https://github.com/modelcontextprotocol/servers/blob/main/src/git",
     "homepage": "https://github.com/modelcontextprotocol/servers",
     "license": "MIT",
@@ -209,25 +209,25 @@
   {
     "name": "mcp-server-sentry",
     "description": "MCP server for retrieving issues from sentry.io",
-    "vendor": "Unknown",
+    "vendor": "Anthropic, PBC (https://anthropic.com)",
     "sourceUrl": "https://github.com/modelcontextprotocol/servers/blob/main/src/sentry",
     "homepage": "https://github.com/modelcontextprotocol/servers",
-    "license": "Unknown",
+    "license": "MIT",
     "runtime": "python"
   },
   {
     "name": "mcp-server-sqlite",
     "description": "A simple SQLite MCP server",
-    "vendor": "Unknown",
+    "vendor": "Anthropic, PBC (https://anthropic.com)",
     "sourceUrl": "https://github.com/modelcontextprotocol/servers/blob/main/src/sqlite",
     "homepage": "https://github.com/modelcontextprotocol/servers",
-    "license": "Unknown",
+    "license": "MIT",
     "runtime": "python"
   },
   {
     "name": "mcp-server-time",
     "description": "A Model Context Protocol server providing tools for time queries and timezone conversions for LLMs",
-    "vendor": "Mariusz 'maledorak' Korzekwa",
+    "vendor": "Anthropic, PBC (https://anthropic.com)",
     "sourceUrl": "https://github.com/modelcontextprotocol/servers/blob/main/src/time",
     "homepage": "https://github.com/modelcontextprotocol/servers",
     "license": "MIT",
