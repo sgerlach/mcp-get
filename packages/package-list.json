@@ -243,6 +243,14 @@
     "runtime": "python"
   },
   {
+
+    "name": "@automatalabs/mcp-server-playwright",
+    "description": "MCP server for browser automation using Playwright",
+    "vendor": "Automata Labs (https://automatalabs.io)",
+    "sourceUrl": "https://github.com/Automata-Labs-team/MCP-Server-Playwright/tree/main",
+    "homepage": "https://github.com/Automata-Labs-team/MCP-Server-Playwright",
+  },
+  {
     "name": "@mcp-get-community/server-llm-txt",
     "description": "MCP server that extracts and serves context from llm.txt files, enabling AI models to understand file structure, dependencies, and code relationships in development environments",
     "vendor": "Michael Latman (https://michaellatman.com)",
