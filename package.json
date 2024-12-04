@@ -1,6 +1,6 @@
 {
   "name": "@michaellatman/mcp-get",
-  "version": "1.0.22",
+  "version": "1.0.23",
   "description": "A NPX command to install and list packages",
   "main": "dist/index.js",
   "scripts": {
