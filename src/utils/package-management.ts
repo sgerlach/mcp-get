@@ -186,7 +186,33 @@ async function promptForEnvVars(packageName: string): Promise<Record<string, str
   return envVars;
 }
 
+async function isClaudeRunning(): Promise<boolean> {
+  try {
+    const platform = process.platform;
+    if (platform === 'win32') {
+      const { stdout } = await execAsync('tasklist /FI "IMAGENAME eq Claude.exe" /NH');
+      return stdout.includes('Claude.exe');
+    } else if (platform === 'darwin') {
+      const { stdout } = await execAsync('pgrep -x "Claude"');
+      return !!stdout.trim();
+    } else if (platform === 'linux') {
+      const { stdout } = await execAsync('pgrep -f "claude"');
+      return !!stdout.trim();
+    }
+    return false;
+  } catch (error) {
+    // If the command fails, assume Claude is not running
+    return false;
+  }
+}
+
 async function promptForRestart(): Promise<boolean> {
+  // Check if Claude is running first
+  const claudeRunning = await isClaudeRunning();
+  if (!claudeRunning) {
+    return false;
+  }
+
   const { shouldRestart } = await inquirer.prompt<{ shouldRestart: boolean }>([
     {
       type: 'confirm',
