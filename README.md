@@ -103,30 +103,50 @@ If you have any questions or need help, feel free to reach out:
 
 ## Adding Your Own MCP Server to the Registry
 
-To add your own MCP server to the registry, follow these steps:
+There are two ways to add your MCP server to the registry:
 
-1. **Create Your MCP Server**: Develop your MCP server according to the MCP protocol specifications. Ensure it meets all the necessary requirements and functionalities.
+### Option 1: Manual Package List Addition
 
-2. **Prepare `package-list.json`**: Modify the existing `packages/package-list.json` file with the following required fields and format:
+If you want to maintain your own NPM package:
+
+1. **Create Your MCP Server**: 
+   - Develop your MCP server according to the [MCP protocol specifications](https://modelcontextprotocol.io)
+   - Publish it as an NPM package
+
+2. **Add to Package List**: Add your server to `packages/package-list.json`:
     ```json
-    [
-      {
-        "name": "your-package-name",
-        "description": "A brief description of your MCP server",
-        "vendor": "Your Name or Organization",
-        "sourceUrl": "URL to the source code repository",
-        "homepage": "URL to the homepage or documentation",
-        "license": "License type (e.g., MIT)"
-      }
-    ]
+    {
+      "name": "your-package-name",
+      "description": "A brief description of your MCP server",
+      "vendor": "Your Name or Organization",
+      "sourceUrl": "URL to the source code repository",
+      "homepage": "URL to the homepage or documentation",
+      "license": "License type (e.g., MIT)",
+      "runtime": "node"
+    }
     ```
 
-3. **Update the Registry**: Add your server details to the `packages/package-list.json` file in the repository. Ensure the details are accurate and follow the required format.
+3. **Add to Helpers**: If your server requires specific environment variables or configurations, add them to `src/helpers/index.ts`.
 
-4. **Add to Helpers**: If your MCP server requires specific environment variables or configurations, add the necessary helper configurations to the `src/helpers/index.ts` file.
+4. **Submit a Pull Request**: Fork this repository, add your package details, and submit a PR.
 
-5. **Submit a Pull Request**: Fork the repository, make your changes, and submit a pull request with a clear description of your MCP server and its functionalities.
+### Option 2: Community Servers Repository
 
-6. **Review and Merge**: The maintainers will review your pull request. If everything is in order, your MCP server will be added to the registry.
+If you don't want to manage NPM deployment and package distribution:
 
-Once your changes are merged, they will automatically be published to NPM and available for users.
+1. **Fork Community Repository**: 
+   - Fork [mcp-get/community-servers](https://github.com/mcp-get/community-servers)
+   - This repository follows the same structure as the official MCP servers
+
+2. **Add Your Server**:
+   - Add your implementation to the `src` directory
+   - Follow the existing patterns and structure
+   - Include necessary documentation and tests
+
+3. **Submit a Pull Request**:
+   - Submit your PR to the community servers repository
+   - Once merged, your server will be automatically added to the registry
+
+Both options require following the [MCP protocol specifications](https://modelcontextprotocol.io). Choose the option that best fits your needs:
+- Option 1 if you want full control over your package distribution
+- Option 2 if you want to avoid managing NPM deployment and package distribution
