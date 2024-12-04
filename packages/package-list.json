@@ -244,7 +244,7 @@
   },
   {
     "name": "@mcp-get-community/server-llm-txt",
-    "description": "MCP server for serving llm.txt files",
+    "description": "MCP server that extracts and serves context from llm.txt files, enabling AI models to understand file structure, dependencies, and code relationships in development environments",
     "vendor": "Michael Latman (https://michaellatman.com)",
     "sourceUrl": "https://github.com/mcp-get/community-servers/blob/main/src/server-llm-txt",
     "homepage": "https://github.com/mcp-get/community-servers#readme",
