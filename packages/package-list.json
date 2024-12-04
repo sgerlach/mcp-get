@@ -241,5 +241,14 @@
     "homepage": "https://github.com/tinybirdco/mcp-tinybird",
     "license": "Apache 2.0",
     "runtime": "python"
+  },
+  {
+    "name": "@mcp-get-community/server-llm-txt",
+    "description": "MCP server for serving llm.txt files",
+    "vendor": "Michael Latman (https://michaellatman.com)",
+    "sourceUrl": "https://github.com/mcp-get/community-servers/blob/main/src/server-llm-txt",
+    "homepage": "https://github.com/mcp-get/community-servers#readme",
+    "license": "MIT",
+    "runtime": "node"
   }
 ]

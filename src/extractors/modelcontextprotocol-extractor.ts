@@ -45,6 +45,12 @@ const REPOS: RepoConfig[] = [
     branch: 'main',
     packagePath: 'src',
     runtime: 'mixed'
+  },
+  {
+    url: 'https://github.com/mcp-get/community-servers.git',
+    branch: 'main',
+    packagePath: 'src',
+    runtime: 'mixed'
   }
 ];
 
