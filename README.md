@@ -21,7 +21,7 @@ This tool helps you install and manage MCP servers that connect Claude to variou
 
 ## Prerequisites
 
-- Node.js (version 14 or higher)
+- Node.js (version 14 or higher) for Node.js-based MCP servers
 - Python (version 3.10 or higher) for Python-based MCP servers
 - Claude Desktop app (for local MCP server usage)
 
@@ -107,11 +107,11 @@ There are two ways to add your MCP server to the registry:
 
 ### Option 1: Manual Package List Addition
 
-If you want to maintain your own NPM package:
+If you want to maintain your own package:
 
 1. **Create Your MCP Server**: 
    - Develop your MCP server according to the [MCP protocol specifications](https://modelcontextprotocol.io)
-   - Publish it as an NPM package
+   - Publish it as either an NPM package (installable via npm) or a Python package (installable via uvx)
 
 2. **Add to Package List**: Add your server to `packages/package-list.json`:
     ```json
@@ -122,9 +122,13 @@ If you want to maintain your own NPM package:
       "sourceUrl": "URL to the source code repository",
       "homepage": "URL to the homepage or documentation",
       "license": "License type (e.g., MIT)",
-      "runtime": "node"
+      "runtime": "node | python"
     }
     ```
+
+    The `runtime` field specifies how your package should be installed:
+    - Use `"runtime": "node"` for packages that should be installed via npm
+    - Use `"runtime": "python"` for packages that should be installed via uvx
 
 3. **Add to Helpers**: If your server requires specific environment variables or configurations, add them to `src/helpers/index.ts`.
 
@@ -132,7 +136,7 @@ If you want to maintain your own NPM package:
 
 ### Option 2: Community Servers Repository
 
-If you don't want to manage NPM deployment and package distribution:
+If you don't want to manage package deployment and distribution:
 
 1. **Fork Community Repository**: 
    - Fork [mcp-get/community-servers](https://github.com/mcp-get/community-servers)
@@ -149,4 +153,4 @@ If you don't want to manage NPM deployment and package distribution:
 
 Both options require following the [MCP protocol specifications](https://modelcontextprotocol.io). Choose the option that best fits your needs:
 - Option 1 if you want full control over your package distribution
-- Option 2 if you want to avoid managing NPM deployment and package distribution
+- Option 2 if you want to avoid managing package deployment and distribution
