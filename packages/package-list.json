@@ -264,9 +264,27 @@
     "name": "@executeautomation/playwright-mcp-server",
     "description": "A Model Context Protocol server for Playwright for Browser Automation and Web Scraping.",
     "vendor": "ExecuteAutomation, Ltd (https://executeautomation.com)",
-    "sourceUrl": "https://github.com/executeautomation/mcp-playwright/tree/main/src", 
+    "sourceUrl": "https://github.com/executeautomation/mcp-playwright/tree/main/src",
     "homepage": "https://github.com/executeautomation/mcp-playwright",
     "license": "MIT",
     "runtime": "node"
-   }
+  },
+  {
+    "name": "@mcp-get-community/server-curl",
+    "description": "MCP server for making HTTP requests using a curl-like interface",
+    "vendor": "Michael Latman <https://michaellatman.com>",
+    "sourceUrl": "https://github.com/mcp-get/community-servers/blob/main/src/server-curl",
+    "homepage": "https://github.com/mcp-get-community/server-curl#readme",
+    "license": "MIT",
+    "runtime": "node"
+  },
+  {
+    "name": "@mcp-get-community/server-macos",
+    "description": "MCP server for macOS system operations",
+    "vendor": "Michael Latman <https://michaellatman.com>",
+    "sourceUrl": "https://github.com/mcp-get/community-servers/blob/main/src/server-macos",
+    "homepage": "https://github.com/mcp-get-community/server-macos#readme",
+    "license": "MIT",
+    "runtime": "node"
+  }
 ]
