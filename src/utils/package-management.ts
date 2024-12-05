@@ -9,8 +9,83 @@ import path from 'path';
 import fs from 'fs';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
+import os from 'os';
+
+declare function fetch(url: string, init?: any): Promise<{ ok: boolean; statusText: string }>;
 
 const execAsync = promisify(exec);
+
+interface MCPPreferences {
+  allowAnalytics?: boolean;
+}
+
+function getPreferencesPath(): string {
+  if (process.platform === 'win32') {
+    const appData = process.env.APPDATA || path.join(os.homedir(), 'AppData', 'Roaming');
+    return path.join(appData, 'mcp-get', 'preferences.json');
+  }
+  
+  // Unix-like systems (Linux, macOS)
+  const homeDir = os.homedir();
+  return path.join(homeDir, '.mcp-get', 'preferences.json');
+}
+
+function readPreferences(): MCPPreferences {
+  const prefsPath = getPreferencesPath();
+  if (!fs.existsSync(prefsPath)) {
+    return {};
+  }
+  try {
+    return JSON.parse(fs.readFileSync(prefsPath, 'utf8'));
+  } catch (error) {
+    return {};
+  }
+}
+
+function writePreferences(prefs: MCPPreferences): void {
+  const prefsPath = getPreferencesPath();
+  const prefsDir = path.dirname(prefsPath);
+  
+  if (!fs.existsSync(prefsDir)) {
+    fs.mkdirSync(prefsDir, { recursive: true });
+  }
+  
+  fs.writeFileSync(prefsPath, JSON.stringify(prefs, null, 2));
+}
+
+async function checkAnalyticsConsent(): Promise<boolean> {
+  const prefs = readPreferences();
+  
+  if (typeof prefs.allowAnalytics === 'boolean') {
+    return prefs.allowAnalytics;
+  }
+
+  const { allowAnalytics } = await inquirer.prompt<{ allowAnalytics: boolean }>([{
+    type: 'confirm',
+    name: 'allowAnalytics',
+    message: 'Would you like to help improve mcp-get by sharing anonymous installation analytics?',
+    default: true
+  }]);
+
+  writePreferences({ ...prefs, allowAnalytics });
+  return allowAnalytics;
+}
+
+async function trackInstallation(packageName: string): Promise<void> {
+  try {
+    const response = await fetch(`https://mcp-get.com/api/packages/${packageName}/install`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    if (!response.ok) {
+      throw new Error(`Failed to track installation: ${response.statusText}`);
+    }
+  } catch (error) {
+    console.warn('Failed to track package installation');
+  }
+}
 
 async function promptForEnvVars(packageName: string): Promise<Record<string, string> | undefined> {
   const helpers = packageHelpers[packageName];
@@ -111,7 +186,33 @@ async function promptForEnvVars(packageName: string): Promise<Record<string, str
   return envVars;
 }
 
+async function isClaudeRunning(): Promise<boolean> {
+  try {
+    const platform = process.platform;
+    if (platform === 'win32') {
+      const { stdout } = await execAsync('tasklist /FI "IMAGENAME eq Claude.exe" /NH');
+      return stdout.includes('Claude.exe');
+    } else if (platform === 'darwin') {
+      const { stdout } = await execAsync('pgrep -x "Claude"');
+      return !!stdout.trim();
+    } else if (platform === 'linux') {
+      const { stdout } = await execAsync('pgrep -f "claude"');
+      return !!stdout.trim();
+    }
+    return false;
+  } catch (error) {
+    // If the command fails, assume Claude is not running
+    return false;
+  }
+}
+
 async function promptForRestart(): Promise<boolean> {
+  // Check if Claude is running first
+  const claudeRunning = await isClaudeRunning();
+  if (!claudeRunning) {
+    return false;
+  }
+
   const { shouldRestart } = await inquirer.prompt<{ shouldRestart: boolean }>([
     {
       type: 'confirm',
@@ -171,6 +272,13 @@ export async function installPackage(pkg: Package): Promise<void> {
     
     await installMCPServer(pkg.name, envVars, pkg.runtime);
     console.log('Updated Claude desktop configuration');
+
+    // Check analytics consent and track if allowed
+    const analyticsAllowed = await checkAnalyticsConsent();
+    if (analyticsAllowed) {
+      await trackInstallation(pkg.name);
+    }
+
     await promptForRestart();
   } catch (error) {
     console.error('Failed to install package:', error);
