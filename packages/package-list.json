@@ -243,7 +243,6 @@
     "runtime": "python"
   },
   {
-
     "name": "@automatalabs/mcp-server-playwright",
     "description": "MCP server for browser automation using Playwright",
     "vendor": "Automata Labs (https://automatalabs.io)",
@@ -260,5 +259,14 @@
     "homepage": "https://github.com/mcp-get/community-servers#readme",
     "license": "MIT",
     "runtime": "node"
-  }
+  },
+  {
+    "name": "@executeautomation/playwright-mcp-server",
+    "description": "A Model Context Protocol server for Playwright for Browser Automation and Web Scraping.",
+    "vendor": "ExecuteAutomation, Ltd (https://executeautomation.com)",
+    "sourceUrl": "https://github.com/executeautomation/mcp-playwright/tree/main/src", 
+    "homepage": "https://github.com/executeautomation/mcp-playwright",
+    "license": "MIT",
+    "runtime": "node"
+   }
 ]
