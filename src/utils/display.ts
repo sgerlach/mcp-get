@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import { ResolvedPackage } from './package-management.js';
+import { ResolvedPackage } from '../types/package.js';
 import inquirer from 'inquirer';
 
 export async function displayPackageDetailsWithActions(pkg: ResolvedPackage): Promise<'install' | 'uninstall' | 'open' | 'back' | 'exit'> {
