@@ -1,22 +1,14 @@
 import inquirer from 'inquirer';
 import chalk from 'chalk';
-import { readFileSync } from 'fs';
-import { join } from 'path';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
 import { Package } from './types/index.js';
-import { uninstallPackage } from './utils/package-management.js';
+import { uninstallPackage, resolvePackages, ResolvedPackage } from './utils/package-management.js';
 import { displayPackageDetailsWithActions } from './utils/display.js';
 import { list } from './list.js';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-const packageListPath = join(__dirname, '../packages/package-list.json');
-
 export async function uninstall(packageName?: string): Promise<void> {
   try {
-    const packageList: Package[] = JSON.parse(readFileSync(packageListPath, 'utf-8'));
-    let selectedPackage: Package | undefined;
+    const packageList = resolvePackages();
+    let selectedPackage: ResolvedPackage | undefined;
 
     if (packageName) {
       selectedPackage = packageList.find(p => p.name === packageName);
@@ -26,7 +18,7 @@ export async function uninstall(packageName?: string): Promise<void> {
       }
     } else {
       // Use same selection interface as list command
-      const choices = packageList.map((pkg, index) => ({
+      const choices = packageList.map((pkg) => ({
         name: `${pkg.name.padEnd(24)} │ ${
           pkg.description.length > 47 ? `${pkg.description.slice(0, 44)}...` : pkg.description.padEnd(49)
         } │ ${pkg.vendor.padEnd(19)} │ ${pkg.license.padEnd(14)}`,
@@ -34,7 +26,7 @@ export async function uninstall(packageName?: string): Promise<void> {
         short: pkg.name
       }));
 
-      const { selectedPkg } = await inquirer.prompt<{ selectedPkg: Package }>([
+      const { selectedPkg } = await inquirer.prompt<{ selectedPkg: ResolvedPackage }>([
         {
           type: 'autocomplete',
           name: 'selectedPkg',
@@ -62,7 +54,7 @@ export async function uninstall(packageName?: string): Promise<void> {
   }
 }
 
-async function handlePackageAction(action: string, pkg: Package) {
+async function handlePackageAction(action: string, pkg: ResolvedPackage) {
   switch (action) {
     case 'install':
       // Import and call install function

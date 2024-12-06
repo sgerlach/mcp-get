@@ -2,39 +2,23 @@ import inquirer from 'inquirer';
 import chalk from 'chalk';
 import { readConfig } from './utils/config.js';
 import { displayPackageDetailsWithActions } from './utils/display.js';
-import { uninstallPackage } from './utils/package-management.js';
-import { Package } from './types/index.js';
-import { readFileSync } from 'fs';
-import { join } from 'path';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
+import { uninstallPackage, resolvePackages, ResolvedPackage } from './utils/package-management.js';
 import AutocompletePrompt from 'inquirer-autocomplete-prompt';
 import fuzzy from 'fuzzy';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-const packageListPath = join(__dirname, '../packages/package-list.json');
 
 inquirer.registerPrompt('autocomplete', AutocompletePrompt);
 
 export async function listInstalledPackages(): Promise<void> {
-  // Read full package list
-  const allPackages: Package[] = JSON.parse(readFileSync(packageListPath, 'utf-8'));
+  // Get all packages with their resolved status
+  const allPackages = resolvePackages();
   
-  // Get installed packages from config
-  const config = readConfig();
-  const installedServers = config.mcpServers || {};
-  const serverNames = Object.keys(installedServers);
+  // Filter for only installed packages
+  const installedPackages = allPackages.filter(pkg => pkg.isInstalled);
 
-  if (serverNames.length === 0) {
+  if (installedPackages.length === 0) {
     console.log(chalk.yellow('\nNo MCP servers are currently installed.'));
     return;
   }
-
-  // Filter for only installed packages
-  const installedPackages = allPackages.filter(pkg => 
-    serverNames.includes(pkg.name.replace(/\//g, '-'))
-  );
 
   console.log(chalk.bold.cyan('\n📦 Installed Packages'));
   console.log(chalk.gray(`Found ${installedPackages.length} installed packages\n`));
@@ -48,7 +32,7 @@ export async function listInstalledPackages(): Promise<void> {
     short: pkg.name
   }));
 
-  const answer = await inquirer.prompt<{ selectedPackage: Package }>([
+  const answer = await inquirer.prompt<{ selectedPackage: ResolvedPackage }>([
     {
       type: 'autocomplete',
       name: 'selectedPackage',
@@ -66,23 +50,14 @@ export async function listInstalledPackages(): Promise<void> {
     }
   ]);
 
-  const displayPackages = answer.selectedPackage ? [answer.selectedPackage] : installedPackages;
-
-  if (displayPackages.length === 0) {
-    console.log(chalk.yellow('\nNo packages found matching your search.'));
+  if (!answer.selectedPackage) {
     return;
   }
 
-  console.log(chalk.bold.white(`\nShowing ${displayPackages.length} package(s):`));
-  displayPackages.forEach(displayPackageDetailsWithActions);
-
-  if (displayPackages.length === 1) {
-    const pkg = displayPackages[0];
-    await handleSelectedPackage(pkg);
-  }
+  await handleSelectedPackage(answer.selectedPackage);
 }
 
-async function handleSelectedPackage(pkg: Package) {
+async function handleSelectedPackage(pkg: ResolvedPackage) {
   const action = await displayPackageDetailsWithActions(pkg);
   
   switch (action) {

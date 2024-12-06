@@ -309,22 +309,108 @@ export async function uninstallPackage(packageName: string): Promise<void> {
 
 export function isPackageInstalled(packageName: string): boolean {
   const config = readConfig();
-  return packageName in (config.mcpServers || {});
+  // Sanitize package name the same way as installation
+  const serverName = packageName.replace(/\//g, '-');
+  return serverName in (config.mcpServers || {});
 }
 
-export function getPackageDetails(packageName: string): Package {
-  // Read package list from JSON file
-  const packageListPath = path.join(dirname(fileURLToPath(import.meta.url)), '../../packages/package-list.json');
-  const packages: Package[] = JSON.parse(fs.readFileSync(packageListPath, 'utf8'));
-  
-  // Find the package
-  const pkg = packages.find(p => p.name === packageName);
-  if (!pkg) {
-    throw new Error(`Package ${packageName} not found`);
-  }
+export interface ResolvedPackage extends Package {
+  isInstalled: boolean;
+  isVerified: boolean;
+  runtime: 'node' | 'python';
+}
 
-  return {
-    ...pkg,
-    isInstalled: isPackageInstalled(packageName)
-  };
+export function resolvePackages(): ResolvedPackage[] {
+  try {
+    // Read package list from JSON file
+    const packageListPath = path.join(dirname(fileURLToPath(import.meta.url)), '../../packages/package-list.json');
+    const packages: Package[] = JSON.parse(fs.readFileSync(packageListPath, 'utf8'));
+    
+    // Get installed packages from config
+    const config = readConfig();
+    const installedServers = config.mcpServers || {};
+    const installedPackageNames = Object.keys(installedServers);
+
+    // Create a map of existing packages
+    const packageMap = new Map(packages.map(pkg => [pkg.name, {
+      ...pkg,
+      runtime: pkg.runtime || 'node'  // Ensure runtime is set for verified packages
+    }]));
+
+    // Add any installed packages that aren't in the package list
+    for (const serverName of installedPackageNames) {
+      // Convert server name back to package name
+      const packageName = serverName.replace(/-/g, '/');
+      if (!packageMap.has(packageName)) {
+        // Add a basic package entry for installed but unlisted packages
+        const installedServer = installedServers[serverName];
+        packageMap.set(packageName, {
+          name: packageName,
+          description: 'Installed package (not in package list)',
+          vendor: 'Unknown',
+          sourceUrl: '',
+          homepage: '',
+          license: 'Unknown',
+          runtime: installedServer?.runtime || 'node'
+        });
+      }
+    }
+
+    // Convert all packages to ResolvedPackages
+    return Array.from(packageMap.values()).map(pkg => ({
+      ...pkg,
+      runtime: pkg.runtime || 'node',  // Ensure runtime is set for all packages
+      isInstalled: isPackageInstalled(pkg.name),
+      isVerified: packages.some(p => p.name === pkg.name)
+    }));
+  } catch (error) {
+    console.error('Error resolving packages:', error);
+    return [];
+  }
+}
+
+export function resolvePackage(packageName: string): ResolvedPackage | null {
+  try {
+    // Read package list from JSON file
+    const packageListPath = path.join(dirname(fileURLToPath(import.meta.url)), '../../packages/package-list.json');
+    const packages: Package[] = JSON.parse(fs.readFileSync(packageListPath, 'utf8'));
+    
+    // Find the package in the verified list
+    const pkg = packages.find(p => p.name === packageName);
+    
+    if (!pkg) {
+      // Check if it's an installed package
+      const config = readConfig();
+      const serverName = packageName.replace(/\//g, '-');
+      const installedServer = config.mcpServers?.[serverName];
+      
+      if (installedServer) {
+        return {
+          name: packageName,
+          description: 'Installed package (not in package list)',
+          vendor: 'Unknown',
+          sourceUrl: '',
+          homepage: '',
+          license: 'Unknown',
+          runtime: installedServer.runtime || 'node',
+          isInstalled: true,
+          isVerified: false
+        };
+      }
+      return null;
+    }
+
+    // Check installation status
+    const isInstalled = isPackageInstalled(packageName);
+
+    return {
+      ...pkg,
+      runtime: pkg.runtime || 'node',  // Ensure runtime is set
+      isInstalled,
+      isVerified: true
+    };
+  } catch (error) {
+    console.error('Error resolving package:', error);
+    return null;
+  }
 } 
