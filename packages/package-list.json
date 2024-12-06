@@ -296,7 +296,7 @@
     "license": "MIT",
     "runtime": "node"
   },
-{
+  {
   "name": "docker-mcp",
   "description": "A powerful Model Context Protocol (MCP) server for Docker operations, enabling seamless container and compose stack management through Claude AI",
   "vendor": "QuantGeekDev & md-archive",
@@ -304,5 +304,5 @@
   "homepage": "https://github.com/QuantGeekDev/docker-mcp",
   "license": "MIT",
   "runtime": "python"
-}
+  }
 ]
