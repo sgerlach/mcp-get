@@ -313,5 +313,14 @@
     "homepage": "https://github.com/kiliczsh/mcp-mongo-server",
     "license": "MIT",
     "runtime": "node"
+  },
+  {
+    "name": "@llmindset/mcp-hfspace",
+    "description": "MCP Server for using HuggingFace Spaces. Seamlessly use the latest Open Source Image, Audio and Text Models from within Claude Deskop.",
+    "vendor": "llmindset.co.uk",
+    "sourceUrl": "https://github.com/evalstate/mcp-hfspace/",
+    "homepage": "https://llmindset.co.uk/resources/hfspace-connector/",
+    "license": "MIT",
+    "runtime": "node"
   }
 ]
