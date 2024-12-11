@@ -93,7 +93,7 @@ export const packageHelpers: PackageHelpers = {
       }
     }
   },
-  '@benborlal29/mcp-server-mysql': {
+  '@benborla29/mcp-server-mysql': {
     requiredEnvVars: {
       MYSQL_HOST: {
         description: 'MySQL Host address',
