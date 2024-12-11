@@ -342,7 +342,7 @@
     "runtime": "node"
   },
   {
-    "name": "mcp-server-mysql",
+    "name": "@benborla29/mcp-server-mysql",
     "description": "An MCP server for interacting with MySQL databases",
     "vendor": "Ben Borla (https://benborla.dev)",
     "sourceUrl": "https://github.com/benborla/mcp-server-mysql",
