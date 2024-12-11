@@ -7,6 +7,10 @@ import { Octokit } from '@octokit/rest';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+const octokit = new Octokit({
+  auth: process.env.GITHUB_TOKEN
+});
+
 const REQUIRED_FIELDS = ['name', 'description', 'vendor', 'sourceUrl', 'homepage', 'license', 'runtime'];
 const VALID_RUNTIMES = ['node', 'python'];
 
@@ -159,7 +163,6 @@ async function validateEnvironmentVariables(pkg) {
 }
 
 async function provideFeedback(newPackages) {
-  const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
   const { data: pullRequest } = await octokit.pulls.get({
     owner: process.env.GITHUB_REPOSITORY_OWNER,
     repo: process.env.GITHUB_REPOSITORY,
