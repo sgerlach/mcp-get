@@ -1,7 +1,11 @@
-const { execSync } = require('child_process');
-const fs = require('fs');
-const path = require('path');
-const { Octokit } = require('@octokit/rest');
+import { execSync } from 'child_process';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { Octokit } from '@octokit/rest';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const REQUIRED_FIELDS = ['name', 'description', 'vendor', 'sourceUrl', 'homepage', 'license', 'runtime'];
 const VALID_RUNTIMES = ['node', 'python'];
@@ -32,7 +36,7 @@ async function validatePackages() {
   await provideFeedback(newPackages);
 }
 
-function validateJsonFormatting(content) {
+export function validateJsonFormatting(content) {
   const lines = content.split('\n');
   for (const line of lines) {
     if (line.trim() && line.match(/^( +)/)) {
@@ -80,7 +84,7 @@ function getNewPackages(packageList) {
   return newPackages;
 }
 
-function validateRequiredFields(pkg) {
+export function validateRequiredFields(pkg) {
   console.log('Checking required fields...');
   for (const field of REQUIRED_FIELDS) {
     if (!pkg[field]) {
@@ -99,7 +103,7 @@ function validateRequiredFields(pkg) {
   }
 }
 
-function validateRuntime(pkg) {
+export function validateRuntime(pkg) {
   console.log('Validating runtime...');
   if (!VALID_RUNTIMES.includes(pkg.runtime)) {
     throw new Error(`Package ${pkg.name} has invalid runtime: ${pkg.runtime}. Must be one of: ${VALID_RUNTIMES.join(', ')}`);

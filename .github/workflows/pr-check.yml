@@ -21,14 +21,14 @@ jobs:
           node-version: '18'
 
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
-          python-version: '3.x'
+          python-version: '3.12'
 
-      - name: Configure pip
+      - name: Configure pip for uvx
         run: |
-          python -m pip install --upgrade pip
-          pip config set global.extra-index-url https://uvx.org/pypi/simple/
+          pip config set global.index-url https://uvx.org/pypi/simple/
+          pip config set global.trusted-host uvx.org
 
       - name: Install dependencies
         run: npm ci
