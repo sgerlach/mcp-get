@@ -25,20 +25,27 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Configure pip for uvx
+      - name: Configure pip
         run: |
-          pip install --upgrade pip
-          pip config set global.index-url https://uvx.org/pypi/simple/
+          python -m pip install --upgrade pip
+          pip config set global.extra-index-url https://uvx.org/pypi/simple/
 
       - name: Install dependencies
         run: npm ci
 
       - name: Run PR check script
         run: npm run pr-check
+        env:
+          DEBUG: 'true'
 
       - name: Provide feedback
+        if: always()
         run: |
-          COMMENT="PR check completed. Please review the results."
+          if [ ${{ job.status }} == 'success' ]; then
+            COMMENT="✅ PR validation passed successfully!"
+          else
+            COMMENT="❌ PR validation failed. Please check the workflow logs for details."
+          fi
           gh pr comment ${{ github.event.pull_request.number }} --body "$COMMENT"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

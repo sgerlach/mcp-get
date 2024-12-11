@@ -8,14 +8,21 @@ const VALID_RUNTIMES = ['node', 'python'];
 
 async function validatePackages() {
   const packageListPath = path.join(__dirname, '../../packages/package-list.json');
-  const packageList = JSON.parse(fs.readFileSync(packageListPath, 'utf-8'));
+  let packageList;
 
-  // Validate JSON formatting
-  validateJsonFormatting(packageListPath);
+  try {
+    const content = fs.readFileSync(packageListPath, 'utf-8');
+    packageList = JSON.parse(content);
+    validateJsonFormatting(content);
+  } catch (error) {
+    throw new Error(`Failed to parse package-list.json: ${error.message}`);
+  }
 
   const newPackages = getNewPackages(packageList);
+  console.log('Validating packages:', newPackages.map(p => p.name).join(', '));
 
   for (const pkg of newPackages) {
+    console.log(`\nValidating package: ${pkg.name}`);
     validateRequiredFields(pkg);
     validateRuntime(pkg);
     await validatePackagePublication(pkg);
@@ -25,27 +32,23 @@ async function validatePackages() {
   await provideFeedback(newPackages);
 }
 
-function validateJsonFormatting(filePath) {
-  const content = fs.readFileSync(filePath, 'utf-8');
-
-  // Check for consistent indentation (2 spaces)
+function validateJsonFormatting(content) {
   const lines = content.split('\n');
   for (const line of lines) {
-    if (line.trim() && line.match(/^ +/)?.[0]?.length % 2 !== 0) {
-      throw new Error('Inconsistent indentation detected. Use 2 spaces for indentation.');
+    if (line.trim() && line.match(/^( +)/)) {
+      const indent = line.match(/^( +)/)[1].length;
+      if (indent % 2 !== 0) {
+        throw new Error(`Invalid indentation on line: ${line.trim()}\nUse 2 spaces for indentation.`);
+      }
     }
   }
 
-  // Check for trailing commas and proper array formatting
-  if (!content.match(/,\n *}/g)) {
-    throw new Error('Missing trailing commas in JSON objects');
-  }
-
-  // Validate overall JSON structure
-  try {
-    JSON.parse(content);
-  } catch (error) {
-    throw new Error(`Invalid JSON format: ${error.message}`);
+  const jsonWithoutComments = content.replace(/\/\/.*/g, '');
+  const objects = jsonWithoutComments.match(/\{[^{}]*\}/g) || [];
+  for (const obj of objects) {
+    if (obj.match(/,[^\S\n]*[\]}]/)) {
+      throw new Error('Remove trailing commas before closing brackets/braces');
+    }
   }
 }
 
@@ -78,13 +81,14 @@ function getNewPackages(packageList) {
 }
 
 function validateRequiredFields(pkg) {
+  console.log('Checking required fields...');
   for (const field of REQUIRED_FIELDS) {
     if (!pkg[field]) {
       throw new Error(`Package ${pkg.name} is missing required field: ${field}`);
     }
   }
 
-  // Validate URL formats
+  console.log('Validating URLs...');
   const urlFields = ['sourceUrl', 'homepage'];
   for (const field of urlFields) {
     try {
@@ -96,6 +100,7 @@ function validateRequiredFields(pkg) {
 }
 
 function validateRuntime(pkg) {
+  console.log('Validating runtime...');
   if (!VALID_RUNTIMES.includes(pkg.runtime)) {
     throw new Error(`Package ${pkg.name} has invalid runtime: ${pkg.runtime}. Must be one of: ${VALID_RUNTIMES.join(', ')}`);
   }
@@ -103,44 +108,49 @@ function validateRuntime(pkg) {
 
 async function validatePackagePublication(pkg) {
   const { name, runtime } = pkg;
+  console.log(`Checking ${runtime} package publication...`);
 
   if (runtime === 'node') {
     try {
-      execSync(`npm view ${name}`);
+      execSync(`npm view ${name} version`, { stdio: 'pipe' });
     } catch (error) {
-      throw new Error(`Package ${name} is not published on npm`);
+      throw new Error(`Package ${name} is not published on npm. Please publish it first.`);
     }
   } else if (runtime === 'python') {
     try {
-      execSync(`pip search ${name} --index https://uvx.org/pypi/simple/`);
+      execSync(`pip install --dry-run ${name} --index-url https://uvx.org/pypi/simple/`, { stdio: 'pipe' });
     } catch (error) {
-      throw new Error(`Package ${name} is not published on uvx`);
+      throw new Error(`Package ${name} is not published on uvx. Please publish it first.`);
     }
   }
 }
 
 async function validateEnvironmentVariables(pkg) {
+  console.log('Validating environment variables...');
   const helperPath = path.join(__dirname, '../helpers/index.ts');
-  const helperContent = fs.readFileSync(helperPath, 'utf-8');
 
-  // Check if package has helper documentation
-  if (!helperContent.includes(pkg.name)) {
-    throw new Error(`Package ${pkg.name} is missing environment variable documentation in helpers/index.ts`);
-  }
+  try {
+    const helperContent = fs.readFileSync(helperPath, 'utf-8');
 
-  // Parse helper content to verify env var documentation
-  const helperMatch = helperContent.match(new RegExp(`['"]${pkg.name}['"]:\\s*{[^}]*}`, 's'));
-  if (!helperMatch) {
-    throw new Error(`Invalid environment variable documentation format for package ${pkg.name}`);
-  }
+    const packagePattern = new RegExp(`['"]${pkg.name.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')}['"]:\\s*{[^}]*}`, 's');
+    const helperMatch = helperContent.match(packagePattern);
 
-  // Verify required env vars have descriptions
-  const envVarSection = helperMatch[0];
-  const requiredVars = envVarSection.match(/required:\s*true/g) || [];
-  const descriptions = envVarSection.match(/description:/g) || [];
+    if (!helperMatch) {
+      throw new Error(`Package ${pkg.name} is missing environment variable documentation in helpers/index.ts`);
+    }
 
-  if (requiredVars.length !== descriptions.length) {
-    throw new Error(`Missing descriptions for required environment variables in package ${pkg.name}`);
+    const envVarSection = helperMatch[0];
+    const requiredVars = (envVarSection.match(/required:\s*true/g) || []).length;
+    const descriptions = (envVarSection.match(/description:\s*['"][^'"]+['"]/g) || []).length;
+
+    if (requiredVars > descriptions) {
+      throw new Error(`Missing descriptions for some required environment variables in package ${pkg.name}`);
+    }
+  } catch (error) {
+    if (error.code === 'ENOENT') {
+      throw new Error('helpers/index.ts file not found. Please create it first.');
+    }
+    throw error;
   }
 }
 
@@ -165,6 +175,6 @@ async function provideFeedback(newPackages) {
 }
 
 validatePackages().catch(error => {
-  console.error(error);
+  console.error('\nValidation failed:', error.message);
   process.exit(1);
 });
