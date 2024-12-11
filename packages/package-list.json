@@ -349,5 +349,14 @@
     "homepage": "https://github.com/benborla/mcp-server-mysql",
     "license": "MIT",
     "runtime": "node"
+  },
+  {
+    "name": "mcp-server-rememberizer",
+    "description": "An MCP server for interacting with Rememberizer's document and knowledge management API. This server enables Large Language Models to search, retrieve, and manage documents and integrations through Rememberizer.",
+    "vendor": "Rememberizer®",
+    "sourceUrl": "https://github.com/skydeckai/mcp-server-rememberizer",
+    "homepage": "https://rememberizer.ai/",
+    "license": "MIT",
+    "runtime": "python"
   }
 ]
