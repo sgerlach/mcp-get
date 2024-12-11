@@ -163,6 +163,15 @@ async function validateEnvironmentVariables(pkg) {
 }
 
 async function provideFeedback(newPackages) {
+  // Skip GitHub API integration if running locally
+  if (!process.env.GITHUB_REPOSITORY || !process.env.GITHUB_PULL_REQUEST_NUMBER) {
+    console.log('Skipping GitHub API integration - running in local mode');
+    console.log(newPackages.length > 0
+      ? `✅ Successfully validated ${newPackages.length} new package(s).`
+      : '❌ No new packages found or validation failed.');
+    return;
+  }
+
   const { data: pullRequest } = await octokit.pulls.get({
     owner: process.env.GITHUB_REPOSITORY_OWNER,
     repo: process.env.GITHUB_REPOSITORY.split('/')[1],
@@ -170,8 +179,8 @@ async function provideFeedback(newPackages) {
   });
 
   const feedback = newPackages.length > 0
-    ? `The following new packages were validated successfully:\n${newPackages.map(pkg => `- ${pkg.name}`).join('\n')}`
-    : 'No new packages were added in this PR.';
+    ? `✅ Successfully validated ${newPackages.length} new package(s).`
+    : '❌ No new packages found or validation failed.';
 
   await octokit.issues.createComment({
     owner: process.env.GITHUB_REPOSITORY_OWNER,
