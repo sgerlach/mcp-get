@@ -5,6 +5,10 @@ on:
     branches:
       - main
 
+permissions:
+  pull-requests: write
+  contents: read
+
 jobs:
   pr-check:
     runs-on: ubuntu-latest
@@ -37,6 +41,7 @@ jobs:
         run: npm run pr-check
         env:
           DEBUG: 'true'
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Provide feedback
         if: always()
