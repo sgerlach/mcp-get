@@ -165,8 +165,8 @@ async function validateEnvironmentVariables(pkg) {
 async function provideFeedback(newPackages) {
   const { data: pullRequest } = await octokit.pulls.get({
     owner: process.env.GITHUB_REPOSITORY_OWNER,
-    repo: process.env.GITHUB_REPOSITORY,
-    pull_number: process.env.GITHUB_PULL_REQUEST_NUMBER
+    repo: process.env.GITHUB_REPOSITORY.split('/')[1],
+    pull_number: parseInt(process.env.GITHUB_PULL_REQUEST_NUMBER, 10)
   });
 
   const feedback = newPackages.length > 0
@@ -175,7 +175,7 @@ async function provideFeedback(newPackages) {
 
   await octokit.issues.createComment({
     owner: process.env.GITHUB_REPOSITORY_OWNER,
-    repo: process.env.GITHUB_REPOSITORY,
+    repo: process.env.GITHUB_REPOSITORY.split('/')[1],
     issue_number: pullRequest.number,
     body: feedback
   });

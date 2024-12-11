@@ -44,6 +44,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+          GITHUB_PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
 
       - name: Provide feedback
         if: always()
