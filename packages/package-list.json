@@ -333,21 +333,12 @@
     "runtime": "node"
   },
   {
-  "name": "mcp-shell",
-  "description": "An MCP server for your shell",
-  "vendor": "Tynan Daly (tynan.daly@hdr.is)",
-  "sourceUrl": "https://github.com/hdresearch/mcp-shell",
-  "homepage": "https://github.com/hdresearch/mcp-shell",
-  "license": "MIT",
-  "runtime": "node "
-  },
-  {
-  "name": "kips",
-  "description": "Personal data management server",
-  "vendor": "Matilde Park (matilde.park@hdr.is)",
-  "sourceUrl": "https://github.com/hdresearch/kips",
-  "homepage": "https://github.com/hdresearch/kips",
-  "license": "MIT",
-  "runtime": "node "
+    "name": "mcp-shell",
+    "description": "An MCP server for your shell",
+    "vendor": "High Dimensional Research (https://hdr.is)",
+    "sourceUrl": "https://github.com/hdresearch/mcp-shell",
+    "homepage": "https://github.com/hdresearch/mcp-shell",
+    "license": "MIT",
+    "runtime": "node "
   }
 ]
