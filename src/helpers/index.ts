@@ -92,7 +92,7 @@ export const packageHelpers: PackageHelpers = {
         required: true
       }
     }
-  }
+  },
   'mcp-server-mysql': {
     requiredEnvVars: {
       MYSQL_HOST: {
