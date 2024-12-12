@@ -152,5 +152,14 @@ export const packageHelpers: PackageHelpers = {
         required: true
       }
     }
+  },
+  '@llmindset/mcp-miro': {
+    requiredEnvVars: {
+      'MIRO-OAUTH-KEY': {
+        description: 'Authentication token for Miro API access (can also be provided via --token argument)',
+        required: true,
+        argName: 'token'
+      }
+    }
   }
 };
