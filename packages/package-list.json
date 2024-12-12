@@ -338,7 +338,7 @@
     "vendor": "llmindset.co.uk",
     "sourceUrl": "https://github.com/evalstate/mcp-miro",
     "homepage": "https://github.com/evalstate/mcp-miro#readme",
-    "license": "Proprietary",
+    "license": "Apache-2.0",
     "runtime": "node"
   },
   {
