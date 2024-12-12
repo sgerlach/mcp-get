@@ -333,6 +333,15 @@
     "runtime": "node"
   },
   {
+    "name": "@llmindset/mcp-miro",
+    "description": "A Model Context Protocol server to connect to the MIRO Whiteboard Application",
+    "vendor": "llmindset.co.uk",
+    "sourceUrl": "https://github.com/evalstate/mcp-miro",
+    "homepage": "https://github.com/evalstate/mcp-miro#readme",
+    "license": "Proprietary",
+    "runtime": "node"
+  },
+  {
     "name": "@strowk/mcp-k8s",
     "description": "MCP server connecting to Kubernetes",
     "vendor": "Timur Sultanaev (https://str4.io/about-me)",
