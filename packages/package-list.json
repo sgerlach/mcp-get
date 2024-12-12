@@ -385,5 +385,23 @@
     "homepage": "https://github.com/g0t4/mcp-server-commands",
     "license": "MIT",
     "runtime": "node"
+  },
+  {
+    "name": "@llmindst/mcp-miro",
+    "description": "MCP server for interacting with Miro boards, enabling LLMs to create, read, and manipulate collaborative whiteboards.",
+    "vendor": "llmindset.co.uk",
+    "sourceUrl": "https://github.com/evalstate/mcp-miro",
+    "homepage": "https://llmindset.co.uk",
+    "license": "MIT",
+    "runtime": "node"
+  },
+  {
+    "name": "mcp-server-kubernetes",
+    "description": "MCP server for managing Kubernetes clusters, enabling LLMs to interact with and control Kubernetes resources.",
+    "vendor": "Flux159 (https://github.com/Flux159)",
+    "sourceUrl": "https://github.com/Flux159/mcp-server-kubernetes",
+    "homepage": "https://github.com/Flux159/mcp-server-kubernetes",
+    "license": "MIT",
+    "runtime": "node"
   }
 ]
