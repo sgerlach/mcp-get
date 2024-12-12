@@ -379,7 +379,7 @@
   },
   {
     "name": "mcp-server-commands",
-    "description": "An MCP server to run commands",
+    "description": "MCP server for executing shell commands and scripts via LLMs. Provides run_command for direct shell commands (ls, hostname) and run_script for running code through interpreters (bash, python). Includes safety features for command review.",
     "vendor": "g0t4 (https://github.com/g0t4)",
     "sourceUrl": "https://github.com/g0t4/mcp-server-commands",
     "homepage": "https://github.com/g0t4/mcp-server-commands",
