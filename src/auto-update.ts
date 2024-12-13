@@ -7,7 +7,8 @@ import chalk from 'chalk';
 const execAsync = promisify(exec);
 
 async function getCurrentVersion(): Promise<string> {
-  const packageJson = JSON.parse(readFileSync(join(__dirname, '../package.json'), 'utf-8'));
+  const packageJsonPath = new URL('../package.json', import.meta.url).pathname;
+  const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'));
   return packageJson.version;
 }
 
@@ -24,18 +25,24 @@ export async function updatePackage(): Promise<void> {
     if (currentVersion !== latestVersion) {
       console.log(chalk.yellow(`\nA new version of mcp-get is available: ${latestVersion} (current: ${currentVersion})`));
       console.log(chalk.cyan('Installing update...'));
-      
-      // Use npx to ensure we get the latest version
-      await execAsync('npx --yes @michaellatman/mcp-get@latest');
-      
-      console.log(chalk.green('✓ Update complete\n'));
-      
+
+      try {
+        // Use npx to ensure we get the latest version
+        await execAsync('npx --yes @michaellatman/mcp-get@latest');
+        console.log(chalk.green('✓ Update complete\n'));
+      } catch (installError: any) {
+        console.error(chalk.red('Failed to install update:'), installError.message);
+        process.exit(1);
+      }
+
       // Exit after update to ensure the new version is used
       process.exit(0);
+    } else {
+      console.log(chalk.green('✓ mcp-get is already up to date\n'));
     }
-  } catch (error) {
-    // Log update check failure but continue with execution
-    console.log(chalk.yellow('\nFailed to check for updates. Continuing with current version.'));
+  } catch (error: any) {
+    console.error(chalk.red('Failed to check for updates:'), error.message);
+    process.exit(1);
   }
 }
 
