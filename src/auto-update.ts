@@ -17,32 +17,30 @@ async function getLatestVersion(): Promise<string> {
   return stdout.trim();
 }
 
-export async function updatePackage(): Promise<void> {
+export async function updatePackage(silent: boolean = false): Promise<void> {
   try {
     const currentVersion = await getCurrentVersion();
     const latestVersion = await getLatestVersion();
 
     if (currentVersion !== latestVersion) {
-      console.log(chalk.yellow(`\nA new version of mcp-get is available: ${latestVersion} (current: ${currentVersion})`));
-      console.log(chalk.cyan('Installing update...'));
-
-      try {
-        // Use npx to ensure we get the latest version
-        await execAsync('npx --yes @michaellatman/mcp-get@latest');
-        console.log(chalk.green('✓ Update complete\n'));
-      } catch (installError: any) {
-        console.error(chalk.red('Failed to install update:'), installError.message);
-        process.exit(1);
+      if (!silent) {
+        console.log(chalk.yellow(`\nA new version of mcp-get is available: ${latestVersion} (current: ${currentVersion})`));
+        console.log(chalk.cyan('Installing update...'));
       }
 
-      // Exit after update to ensure the new version is used
-      process.exit(0);
+      try {
+        await execAsync('npx --yes @michaellatman/mcp-get@latest');
+        if (!silent) console.log(chalk.green('✓ Update complete\n'));
+      } catch (installError: any) {
+        if (!silent) console.error(chalk.red('Failed to install update:'), installError.message);
+        return;
+      }
     } else {
-      console.log(chalk.green('✓ mcp-get is already up to date\n'));
+      if (!silent) console.log(chalk.green('✓ mcp-get is already up to date\n'));
     }
   } catch (error: any) {
-    console.error(chalk.red('Failed to check for updates:'), error.message);
-    process.exit(1);
+    if (!silent) console.error(chalk.red('Failed to check for updates:'), error.message);
+    return;
   }
 }
 
