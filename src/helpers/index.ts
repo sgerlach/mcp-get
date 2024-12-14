@@ -133,6 +133,14 @@ export const packageHelpers: PackageHelpers = {
       }
     }
   },
+  'airtable-mcp-server': {
+    requiredEnvVars: {
+      AIRTABLE_API_KEY: {
+        description: 'API key for Airtable API',
+        required: true
+      }
+    }
+  },
   '@enescinar/twitter-mcp': {
     requiredEnvVars: {
       API_KEY: {
