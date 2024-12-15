@@ -10,6 +10,7 @@
     "test:list": "node --loader ts-node/esm src/index.ts list",
     "test:install": "node --loader ts-node/esm src/index.ts install",
     "test:installed": "node --loader ts-node/esm src/index.ts installed",
+    "test:update": "node --loader ts-node/esm src/index.ts update",
     "extract": "node --loader ts-node/esm src/extractors/modelcontextprotocol-extractor.ts",
     "test:uninstall": "node --loader ts-node/esm src/index.ts uninstall",
     "version:patch": "npm version patch",
