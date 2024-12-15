@@ -52,7 +52,7 @@ await jest.unstable_mockModule('fs', () => ({
 const { updatePackage } = await import('../auto-update.js');
 
 // Helper to create exec result
-const createExecResult = (stdout: string): ExecResult => ({ stdout, stderr: '' });
+const createExecResult = (stdout: string, stderr: string = ''): ExecResult => ({ stdout, stderr });
 
 describe('updatePackage', () => {
   beforeEach(() => {
@@ -73,7 +73,7 @@ describe('updatePackage', () => {
     await updatePackage();
 
     expect(mockExecPromise).toHaveBeenNthCalledWith(1, 'npm show @michaellatman/mcp-get version');
-    expect(mockExecPromise).toHaveBeenNthCalledWith(2, 'npx --yes @michaellatman/mcp-get@latest');
+    expect(mockExecPromise).toHaveBeenNthCalledWith(2, 'npm install -g @michaellatman/mcp-get@latest');
 
     expect(console.log).toHaveBeenNthCalledWith(1,
       '\nA new version of mcp-get is available: 1.0.50 (current: 1.0.48)'
@@ -82,6 +82,9 @@ describe('updatePackage', () => {
       'Installing update...'
     );
     expect(console.log).toHaveBeenNthCalledWith(3,
+      'success'
+    );
+    expect(console.log).toHaveBeenNthCalledWith(4,
       '✓ Update complete\n'
     );
   });
