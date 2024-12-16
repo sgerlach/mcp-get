@@ -1,4 +1,5 @@
-  [ {
+  [ 
+  {
     "name": "mcp-solver",
     "description": "MCP server for Constraint Solving and Optimization",
     "vendor": "Stefan Szeider",
@@ -6,7 +7,7 @@
     "homepage": "https://github.com/szeider/mcp-solver",
     "license": "MIT",
     "runtime": "python"
-  }
+  },
   {
     "name": "@modelcontextprotocol/server-brave-search",
     "description": "MCP server for Brave Search API integration",
