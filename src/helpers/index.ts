@@ -169,5 +169,13 @@ export const packageHelpers: PackageHelpers = {
         argName: 'token'
       }
     }
-  }
+  },
+  'mcp-rememberizer-vectordb': {
+    requiredEnvVars: {
+      REMEMBERIZER_VECTOR_STORE_API_KEY: {
+        description: 'API token for Rememberizer Vector Store',
+        required: true,
+      },
+    },
+  },
 };
