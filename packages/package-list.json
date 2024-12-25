@@ -421,5 +421,14 @@
     "homepage": "https://github.com/Flux159/mcp-server-kubernetes",
     "license": "MIT",
     "runtime": "node"
+  },
+  {
+    "name": "mcp-rememberizer-vectordb",
+    "description": "A Model Context Protocol server for LLMs to interact with Rememberizer Vector Store.",
+    "vendor": "Rememberizer®",
+    "sourceUrl": "https://github.com/skydeckai/mcp-rememberizer-vectordb",
+    "homepage": "https://rememberizer.ai/",
+    "license": "MIT",
+    "runtime": "python"
   }
 ]
