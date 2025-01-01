@@ -178,4 +178,12 @@ export const packageHelpers: PackageHelpers = {
       },
     },
   },
+  '@chanmeng666/google-news-server': {
+    requiredEnvVars: {
+      SERP_API_KEY: {
+        description: 'API key for Google News search',
+        required: true
+      }
+    }
+  }
 };
