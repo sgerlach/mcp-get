@@ -430,5 +430,14 @@
     "homepage": "https://rememberizer.ai/",
     "license": "MIT",
     "runtime": "python"
+  },
+  {
+    "name": "@chanmeng666/google-news-server",
+    "description": "MCP server for Google News search via SerpAPI",
+    "vendor": "Chan Meng",
+    "sourceUrl": "https://github.com/ChanMeng666/server-google-news",
+    "homepage": "https://github.com/ChanMeng666/server-google-news",
+    "license": "MIT",
+    "runtime": "node"
   }
 ]
