@@ -193,7 +193,7 @@ export const packageHelpers: PackageHelpers = {
         required: true
       },
       IMAGE_STORAGE_DIRECTORY: {
-        description: 'Directory on filesystem to store output images.',
+        description: 'Absolute path to a directory on filesystem to store output images.',
         required: true
       }
     }
