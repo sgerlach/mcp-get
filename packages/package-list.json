@@ -1,4 +1,4 @@
-  [
+[
   {
     "name": "mcp-solver",
     "description": "MCP server for Constraint Solving and Optimization",
@@ -439,5 +439,14 @@
     "homepage": "https://rememberizer.ai/",
     "license": "MIT",
     "runtime": "python"
+  },
+  {
+    "name": "redis",
+    "description": "",
+    "vendor": "",
+    "sourceUrl": "https://github.com/modelcontextprotocol/servers/blob/main/src/redis",
+    "homepage": "",
+    "license": "ISC",
+    "runtime": "node"
   }
 ]
