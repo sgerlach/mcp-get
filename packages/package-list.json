@@ -459,6 +459,15 @@
     "runtime": "node"
   },
   {
+    "name": "mcp-server-stability-ai",
+    "description": "Integrates Stability AI's image generation and manipulation capabilities for editing, upscaling, and more via Stable Diffusion models.",
+    "vendor": "Tadas Antanavicius (https://github.com/tadasant)",
+    "sourceUrl": "https://github.com/tadasant/mcp-server-stability-ai",
+    "homepage": "https://www.pulsemcp.com/servers/tadasant-stability-ai",
+    "license": "MIT",
+    "runtime": "node"
+  },
+  {
     "name": "redis",
     "description": "",
     "vendor": "",
@@ -474,6 +483,5 @@
     "sourceUrl": "https://github.com/manusa/kubernetes-mcp-server",
     "homepage": "https://github.com/manusa/kubernetes-mcp-server",
     "license": "Apache-2.0",
-    "runtime": "node"
   }
 ]
