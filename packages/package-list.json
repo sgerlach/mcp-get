@@ -1,4 +1,13 @@
-  [ 
+[
+  {
+    "name": "auto-coder",
+    "description": "MCP server for auto-coder.rag",
+    "vendor": "allwefantasy",
+    "sourceUrl": "https://github.com/allwefantasy/auto-coder",
+    "homepage": "https://github.com/allwefantasy/auto-coder",
+    "license": "MIT",
+    "runtime": "python"
+  },
   {
     "name": "mcp-solver",
     "description": "MCP server for Constraint Solving and Optimization",
@@ -396,6 +405,15 @@
     "runtime": "python"
   },
   {
+    "name": "mcp-server-aidd",
+    "description": "An MCP server that provides a comprehensive set of tools for AI-driven development workflows. Features include file system operations, code analysis using tree-sitter for multiple programming languages, Git operations, code execution, and system information retrieval. Designed to enhance AI's capability to assist in software development tasks.",
+    "vendor": "SkyDeck.ai®",
+    "sourceUrl": "https://github.com/skydeckai/mcp-server-aidd",
+    "homepage": "https://skydeck.ai/",
+    "license": "MIT",
+    "runtime": "python"
+  },
+  {
     "name": "@enescinar/twitter-mcp",
     "description": "This MCP server allows Clients to interact with Twitter, enabling posting tweets and searching Twitter.",
     "vendor": "Enes Çınar",
@@ -448,5 +466,22 @@
     "homepage": "https://www.pulsemcp.com/servers/tadasant-stability-ai",
     "license": "MIT",
     "runtime": "node"
+  },
+  {
+    "name": "redis",
+    "description": "",
+    "vendor": "",
+    "sourceUrl": "https://github.com/modelcontextprotocol/servers/blob/main/src/redis",
+    "homepage": "",
+    "license": "ISC",
+    "runtime": "node"
+  },
+  {
+    "name": "kubernetes-mcp-server",
+    "description": "Powerful and flexible Kubernetes MCP server implementation with additional features for OpenShift. Besides the typical CRUD operations on any Kubernetes resource, this implementation adds specialized features for Pods and other resources.",
+    "vendor": "Marc Nuri (https://www.marcnuri.com)",
+    "sourceUrl": "https://github.com/manusa/kubernetes-mcp-server",
+    "homepage": "https://github.com/manusa/kubernetes-mcp-server",
+    "license": "Apache-2.0",
   }
 ]
