@@ -67,11 +67,3 @@ jobs:
           labels: |
             automated pr
             automerge
-
-      - name: Enable Auto-Merge
-        if: steps.git-check.outputs.changes == 'true'
-        run: |
-          PR_NUMBER=$(gh pr list --json number --jq '.[0].number')
-          gh pr merge $PR_NUMBER --auto --merge
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
