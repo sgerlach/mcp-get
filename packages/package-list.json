@@ -468,7 +468,7 @@
     "runtime": "node"
   },
   {
-    "name": "redis",
+    "name": "@modelcontextprotocol/server-redis",
     "description": "",
     "vendor": "Anthropic, PBC (https://anthropic.com)",
     "sourceUrl": "https://github.com/modelcontextprotocol/servers/blob/main/src/redis",
