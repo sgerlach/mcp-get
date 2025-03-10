@@ -198,7 +198,7 @@ export const packageHelpers: PackageHelpers = {
       }
     }
   },
-  'nile-mcp-server': {
+  '@niledatabase/nile-mcp-server': {
     requiredEnvVars: {
       NILE_API_KEY: {
         description: 'API KEY for Nile',
