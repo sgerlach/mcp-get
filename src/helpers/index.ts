@@ -209,5 +209,13 @@ export const packageHelpers: PackageHelpers = {
         required: true
       }
     }
+  },
+  'hyperbrowser-mcp': {
+    requiredEnvVars: {
+      HYPERBROWSER_API_KEY: {
+        description: 'API KEY for Hyperbrowser',
+        required: true
+      },
+    }
   }
 };
