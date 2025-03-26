@@ -448,5 +448,14 @@
     "homepage": "",
     "license": "ISC",
     "runtime": "node"
+  },
+  {
+    "name": "@modelcontextprotocol/server-redis",
+    "description": "MCP server for using Redis",
+    "vendor": "Anthropic, PBC (https://anthropic.com)",
+    "sourceUrl": "https://github.com/modelcontextprotocol/servers/blob/main/src/redis",
+    "homepage": "https://modelcontextprotocol.io",
+    "license": "MIT",
+    "runtime": "node"
   }
 ]
