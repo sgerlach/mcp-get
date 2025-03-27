@@ -7,6 +7,7 @@
     "build": "tsc && chmod +x dist/index.js",
     "start": "node dist/index.js",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest --config jest.config.mjs",
+    "test:file": "NODE_OPTIONS=--experimental-vm-modules jest --config jest.config.mjs",
     "test:list": "node --loader ts-node/esm src/index.ts list",
     "test:install": "node --loader ts-node/esm src/index.ts install",
     "test:installed": "node --loader ts-node/esm src/index.ts installed",
