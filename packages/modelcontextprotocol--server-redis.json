@@ -1,9 +1,9 @@
 {
   "name": "@modelcontextprotocol/server-redis",
-  "description": "",
+  "description": "Redis database integration for Model Context Protocol",
   "vendor": "Anthropic, PBC (https://anthropic.com)",
   "sourceUrl": "https://github.com/modelcontextprotocol/servers/blob/main/src/redis",
-  "homepage": "",
+  "homepage": "https://github.com/modelcontextprotocol/servers",
   "license": "ISC",
   "runtime": "node",
   "environmentVariables": {}
