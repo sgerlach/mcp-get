@@ -155,9 +155,9 @@ async function validatePackagePublication(pkg) {
     }
   } else if (runtime === 'python') {
     try {
-      execSync(`pip install --dry-run ${name} --index-url https://uvx.org/pypi/simple/`, { stdio: 'pipe' });
+      execSync(`pip install --dry-run ${name}`, { stdio: 'pipe' });
     } catch (error) {
-      throw new Error(`Package ${name} is not published on uvx. Please publish it first.`);
+      throw new Error(`Package ${name} is not published on PyPI. Please publish it first.`);
     }
   }
 }
