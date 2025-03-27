@@ -30,12 +30,7 @@ const TEST_CASES = [
       'BRAVE_API_KEY': true
     }
   },
-  {
-    name: '@kagi/mcp-server-kagi',
-    envVars: {
-      'KAGI_API_KEY': true
-    }
-  },
+  // Note: @kagi/mcp-server-kagi removed as it's not published on npm
   {
     name: '@benborla29/mcp-server-mysql',
     envVars: {
