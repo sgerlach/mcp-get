@@ -1,0 +1,15 @@
+{
+  "name": "@kagi/mcp-server-kagi",
+  "description": "MCP server for Kagi search API integration",
+  "vendor": "ac3xx (https://github.com/ac3xx)",
+  "sourceUrl": "https://github.com/ac3xx/mcp-servers-kagi",
+  "homepage": "https://github.com/ac3xx/mcp-servers-kagi",
+  "license": "MIT",
+  "runtime": "node",
+  "environmentVariables": {
+    "KAGI_API_KEY": {
+      "description": "API key for Kagi Search",
+      "required": true
+    }
+  }
+}

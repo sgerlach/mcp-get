@@ -1,0 +1,10 @@
+{
+  "name": "@calclavia/mcp-obsidian",
+  "description": "MCP server for reading and searching Markdown notes (like Obsidian vaults)",
+  "vendor": "Calclavia (https://github.com/calclavia)",
+  "sourceUrl": "https://github.com/calclavia/mcp-obsidian",
+  "homepage": "https://github.com/calclavia/mcp-obsidian",
+  "license": "MIT",
+  "runtime": "node",
+  "environmentVariables": {}
+}
