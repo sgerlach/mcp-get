@@ -6,5 +6,10 @@
   "homepage": "https://github.com/yuna0x0/anilist-mcp",
   "license": "MIT",
   "runtime": "node",
-  "environmentVariables": {}
+  "environmentVariables": {
+    "ANILIST_TOKEN": {
+      "description": "Optional API token for AniList",
+      "required": false
+    }
+  }
 }
