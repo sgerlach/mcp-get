@@ -122,6 +122,20 @@ describe('uninstall', () => {
     expect(console.log).toHaveBeenCalledWith(expect.stringContaining('Successfully uninstalled test-package'));
   });
 
+  it('should uninstall package with slashes in config if user confirms', async () => {
+    mockResolvePackage.mockReturnValueOnce({ 
+      name: '@scope/package',
+      isInstalled: true
+    } as ResolvedPackage);
+    
+    mockPrompt.mockResolvedValueOnce({ confirmUninstall: true });
+    
+    await uninstall('@scope/package');
+    
+    expect(mockUninstallPackage).toHaveBeenCalledWith('@scope/package');
+    expect(console.log).toHaveBeenCalledWith(expect.stringContaining('Successfully uninstalled @scope/package'));
+  });
+
   it('should handle errors during uninstallation', async () => {
     mockResolvePackage.mockReturnValueOnce({ 
       name: 'test-package',

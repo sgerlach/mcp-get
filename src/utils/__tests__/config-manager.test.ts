@@ -285,6 +285,28 @@ describe('ConfigManager', () => {
       
       expect(writtenConfig.mcpServers['@org-test-package']).toBeUndefined();
     });
+    
+    it('should handle packages with slashes directly in config', async () => {
+      // Setup a config with the package using exact name with slashes
+      const configWithPackage: MCPConfig = {
+        mcpServers: {
+          '@org/test-package': {
+            runtime: 'node',
+            command: 'npx',
+            args: ['-y', '@org/test-package']
+          }
+        }
+      };
+      
+      jest.spyOn(ConfigManager, 'readConfig').mockReturnValueOnce(configWithPackage);
+      
+      await ConfigManager.uninstallPackage('@org/test-package');
+      
+      const writeSpy = jest.spyOn(fs, 'writeFileSync');
+      const writtenConfig = JSON.parse(writeSpy.mock.calls[0][1] as string);
+      
+      expect(writtenConfig.mcpServers['@org/test-package']).toBeUndefined();
+    });
   });
   
   describe('isPackageInstalled', () => {
@@ -322,6 +344,21 @@ describe('ConfigManager', () => {
       const mockConfig: MCPConfig = {
         mcpServers: {
           '@org-test-package': {
+            runtime: 'node'
+          }
+        }
+      };
+      
+      jest.spyOn(ConfigManager, 'readConfig').mockReturnValueOnce(mockConfig);
+      
+      const isInstalled = ConfigManager.isPackageInstalled('@org/test-package');
+      expect(isInstalled).toBe(true);
+    });
+    
+    it('should detect packages stored with exact name including slashes', () => {
+      const mockConfig: MCPConfig = {
+        mcpServers: {
+          '@org/test-package': {
             runtime: 'node'
           }
         }
