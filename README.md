@@ -136,9 +136,11 @@ If you want to maintain your own package:
    }
    ```
 
-   The `runtime` field specifies how your package should be installed:
-   - Use `"runtime": "node"` for packages that should be installed via npm
-   - Use `"runtime": "python"` for packages that should be installed via uvx
+   Important notes:
+   - The `name` field must be the exact resolvable package name in npm or pip
+   - The `runtime` field specifies how your package should be installed:
+     - Use `"runtime": "node"` for packages that should be installed via npm
+     - Use `"runtime": "python"` for packages that should be installed via uvx
    - Always include an `environmentVariables` object (can be empty `{}` if none required)
 
 3. **Validate Your Package**: Run the PR check to validate your package:
