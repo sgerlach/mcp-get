@@ -6,7 +6,6 @@ on:
       - main
 
 permissions:
-  pull-requests: write
   contents: read
 
 jobs:
@@ -45,15 +44,3 @@ jobs:
           GITHUB_REPOSITORY: ${{ github.repository }}
           GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
           GITHUB_PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
-
-      - name: Provide feedback
-        if: always()
-        run: |
-          if [ ${{ job.status }} == 'success' ]; then
-            COMMENT="✅ PR validation passed successfully!"
-          else
-            COMMENT="❌ PR validation failed. Please check the workflow logs for details."
-          fi
-          gh pr comment ${{ github.event.pull_request.number }} --body "$COMMENT"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
