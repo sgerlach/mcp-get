@@ -5,6 +5,7 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { exec } from 'child_process';
 import { promisify } from 'util';
+import { loadPackage } from './package-registry.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -24,13 +25,7 @@ export interface ClaudeConfig {
 }
 
 function getPackageRuntime(packageName: string): 'node' | 'python' {
-  const packageListPath = path.join(dirname(__dirname), '../packages/package-list.json');
-  if (!fs.existsSync(packageListPath)) {
-    return 'node'; // Default to node if package list doesn't exist
-  }
-
-  const packageList = JSON.parse(fs.readFileSync(packageListPath, 'utf8'));
-  const pkg = packageList.find((p: any) => p.name === packageName);
+  const pkg = loadPackage(packageName);
   return pkg?.runtime || 'node';
 }
 

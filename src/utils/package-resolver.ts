@@ -1,9 +1,6 @@
 import { Package, ResolvedPackage } from '../types/package.js';
 import { ConfigManager } from './config-manager.js';
-import path from 'path';
-import fs from 'fs';
-import { dirname } from 'path';
-import { fileURLToPath } from 'url';
+import { loadAllPackages, loadPackage } from './package-registry.js';
 
 export function isPackageInstalled(packageName: string): boolean {
     return ConfigManager.isPackageInstalled(packageName);
@@ -11,9 +8,8 @@ export function isPackageInstalled(packageName: string): boolean {
 
 export function resolvePackages(): ResolvedPackage[] {
     try {
-        // Read package list from JSON file
-        const packageListPath = path.join(dirname(fileURLToPath(import.meta.url)), '../../packages/package-list.json');
-        const packages: Package[] = JSON.parse(fs.readFileSync(packageListPath, 'utf8'));
+        // Load packages from registry
+        const packages: Package[] = loadAllPackages();
         
         // Get installed packages from config
         const config = ConfigManager.readConfig();
@@ -86,16 +82,14 @@ export function resolvePackages(): ResolvedPackage[] {
 
 export function resolvePackage(packageName: string): ResolvedPackage | null {
     try {
-        // Read package list from JSON file
-        const packageListPath = path.join(dirname(fileURLToPath(import.meta.url)), '../../packages/package-list.json');
-        const packages: Package[] = JSON.parse(fs.readFileSync(packageListPath, 'utf8'));
+        // Try to load the package from registry
+        const pkg = loadPackage(packageName);
         
-        // Try to find the package in the verified list
+        // Also try with sanitized name if needed
         const sanitizedName = packageName.replace(/\//g, '-');
-        const pkg = packages.find(p => p.name === packageName || p.name.replace(/\//g, '-') === sanitizedName);
         
         if (!pkg) {
-            // Check if it's an installed package
+            // Check if it's an installed package (but not in registry)
             const config = ConfigManager.readConfig();
             const serverName = packageName.replace(/\//g, '-');
             const installedServer = config.mcpServers?.[serverName];
