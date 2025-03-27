@@ -105,7 +105,7 @@ If you have any questions or need help, feel free to reach out:
 
 There are two ways to add your MCP server to the registry:
 
-### Option 1: Manual Package List Addition
+### Option 1: Manual Package Addition
 
 If you want to maintain your own package:
 
@@ -113,26 +113,40 @@ If you want to maintain your own package:
    - Develop your MCP server according to the [MCP protocol specifications](https://modelcontextprotocol.io)
    - Publish it as either an NPM package (installable via npm) or a Python package (installable via uvx)
 
-2. **Add to Package List**: Add your server to `packages/package-list.json`:
-    ```json
-    {
-      "name": "your-package-name",
-      "description": "A brief description of your MCP server",
-      "vendor": "Your Name or Organization",
-      "sourceUrl": "URL to the source code repository",
-      "homepage": "URL to the homepage or documentation",
-      "license": "License type (e.g., MIT)",
-      "runtime": "node | python"
-    }
-    ```
+2. **Add Your Package to the Package Folder**: Add your server as a JSON file in the `packages/` directory:
 
-    The `runtime` field specifies how your package should be installed:
-    - Use `"runtime": "node"` for packages that should be installed via npm
-    - Use `"runtime": "python"` for packages that should be installed via uvx
+   - For regular packages, use `packages/your-package-name.json`
+   - For scoped packages, use `packages/scope--package-name.json` (double hyphens between scope and name)
 
-3. **Add to Helpers**: If your server requires specific environment variables or configurations, add them to `src/helpers/index.ts`.
+   ```json
+   {
+     "name": "your-package-name",
+     "description": "A brief description of your MCP server",
+     "vendor": "Your Name or Organization",
+     "sourceUrl": "URL to the source code repository",
+     "homepage": "URL to the homepage or documentation",
+     "license": "License type (e.g., MIT)",
+     "runtime": "node | python",
+     "environmentVariables": {
+       "SOME_API_KEY": {
+         "description": "Description of what this key is for",
+         "required": true
+       }
+     }
+   }
+   ```
 
-4. **Submit a Pull Request**: Fork this repository, add your package details, and submit a PR.
+   The `runtime` field specifies how your package should be installed:
+   - Use `"runtime": "node"` for packages that should be installed via npm
+   - Use `"runtime": "python"` for packages that should be installed via uvx
+   - Always include an `environmentVariables` object (can be empty `{}` if none required)
+
+3. **Validate Your Package**: Run the PR check to validate your package:
+   ```
+   npm run pr-check
+   ```
+
+4. **Submit a Pull Request**: Fork this repository, add your package file, and submit a PR.
 
 ### Option 2: Community Servers Repository
 
