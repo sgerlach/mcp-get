@@ -1,16 +1,8 @@
-import { readFileSync } from 'fs';
-import { join } from 'path';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
 import { Package } from './types/index.js';
 import { installPackage as installPkg } from './utils/package-management.js';
 import inquirer from 'inquirer';
 import chalk from 'chalk';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const packageListPath = join(__dirname, '../packages/package-list.json');
+import { loadPackage } from './utils/package-registry.js';
 
 async function promptForRuntime(): Promise<'node' | 'python'> {
   const { runtime } = await inquirer.prompt<{ runtime: 'node' | 'python' }>([
@@ -44,9 +36,8 @@ export async function installPackage(pkg: Package): Promise<void> {
 }
 
 export async function install(packageName: string): Promise<void> {
-  const packageList: Package[] = JSON.parse(readFileSync(packageListPath, 'utf-8'));
+  const pkg = loadPackage(packageName);
 
-  const pkg = packageList.find(p => p.name === packageName);
   if (!pkg) {
     console.warn(chalk.yellow(`Package ${packageName} not found in the curated list.`));
     

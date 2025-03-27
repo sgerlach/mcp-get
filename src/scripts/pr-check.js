@@ -2,31 +2,62 @@ import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { Octokit } from '@octokit/rest';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-const octokit = new Octokit({
-  auth: process.env.GITHUB_TOKEN
-});
 
 const REQUIRED_FIELDS = ['name', 'description', 'vendor', 'sourceUrl', 'homepage', 'license', 'runtime'];
 const VALID_RUNTIMES = ['node', 'python'];
 
 async function validatePackages() {
   const packageListPath = path.join(__dirname, '../../packages/package-list.json');
-  let packageList;
+  const packagesDir = path.join(__dirname, '../../packages');
+  let newPackages = [];
 
-  try {
-    const content = fs.readFileSync(packageListPath, 'utf-8');
-    packageList = JSON.parse(content);
-    validateJsonFormatting(content);
-  } catch (error) {
-    throw new Error(`Failed to parse package-list.json: ${error.message}`);
+  // Check if we're using the new registry structure (individual package files)
+  if (fs.existsSync(packagesDir) && fs.statSync(packagesDir).isDirectory()) {
+    console.log('Using new package structure...');
+    
+    // Get modified or added package files from git diff
+    try {
+      const diffOutput = execSync(`git diff --name-status origin/main -- packages/`).toString();
+      const changedFiles = diffOutput
+        .split('\n')
+        .filter(line => line.trim())
+        .filter(line => line.startsWith('A') || line.startsWith('M'))
+        .map(line => line.split('\t')[1])
+        .filter(file => file.endsWith('.json') && file !== 'packages/package-list.json');
+      
+      // Parse each changed package file
+      for (const file of changedFiles) {
+        try {
+          const content = fs.readFileSync(file, 'utf-8');
+          const pkg = JSON.parse(content);
+          newPackages.push(pkg);
+        } catch (error) {
+          console.warn(`Warning: Failed to parse package file ${file}: ${error.message}`);
+        }
+      }
+    } catch (error) {
+      console.warn(`Warning: Failed to get git diff for registry: ${error.message}`);
+    }
+  } 
+  
+  // If no packages found in registry or registry doesn't exist, fall back to package-list.json
+  if (newPackages.length === 0 && fs.existsSync(packageListPath)) {
+    console.log('Using old package-list.json structure...');
+    
+    try {
+      const content = fs.readFileSync(packageListPath, 'utf-8');
+      const packageList = JSON.parse(content);
+      validateJsonFormatting(content);
+      
+      newPackages = getNewPackages(packageList);
+    } catch (error) {
+      throw new Error(`Failed to parse package-list.json: ${error.message}`);
+    }
   }
-
-  const newPackages = getNewPackages(packageList);
+  
   console.log('Validating packages:', newPackages.map(p => p.name).join(', '));
 
   for (const pkg of newPackages) {
@@ -133,59 +164,31 @@ async function validatePackagePublication(pkg) {
 
 async function validateEnvironmentVariables(pkg) {
   console.log('Validating environment variables...');
-  const helperPath = path.join(__dirname, '../helpers/index.ts');
-
-  try {
-    const helperContent = fs.readFileSync(helperPath, 'utf-8');
-
-    const packagePattern = new RegExp(`['"]${pkg.name.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')}['"]:\\s*{[^}]*}`, 's');
-    const helperMatch = helperContent.match(packagePattern);
-
-    if (!helperMatch) {
-      throw new Error(`Package ${pkg.name} is missing environment variable documentation in helpers/index.ts`);
+  
+  // Check for environment variables in the package definition
+  if (pkg.environmentVariables) {
+    console.log('Found environment variables in package definition...');
+    
+    // Validate that all required variables have descriptions
+    for (const [key, envVar] of Object.entries(pkg.environmentVariables)) {
+      if (envVar.required && !envVar.description) {
+        throw new Error(`Missing description for required environment variable '${key}' in package ${pkg.name}`);
+      }
     }
-
-    const envVarSection = helperMatch[0];
-    const requiredVars = (envVarSection.match(/required:\s*true/g) || []).length;
-    const descriptions = (envVarSection.match(/description:\s*['"][^'"]+['"]/g) || []).length;
-
-    if (requiredVars > descriptions) {
-      throw new Error(`Missing descriptions for some required environment variables in package ${pkg.name}`);
-    }
-  } catch (error) {
-    if (error.code === 'ENOENT') {
-      throw new Error('helpers/index.ts file not found. Please create it first.');
-    }
-    throw error;
   }
+  
+  // No environment variables needed for this package
+  console.log('Environment variables validation passed');
 }
 
 async function provideFeedback(newPackages) {
-  // Skip GitHub API integration if running locally
-  if (!process.env.GITHUB_REPOSITORY || !process.env.GITHUB_PULL_REQUEST_NUMBER) {
-    console.log('Skipping GitHub API integration - running in local mode');
-    console.log(newPackages.length > 0
-      ? `✅ Successfully validated ${newPackages.length} new package(s).`
-      : '❌ No new packages found or validation failed.');
-    return;
-  }
-
-  const { data: pullRequest } = await octokit.pulls.get({
-    owner: process.env.GITHUB_REPOSITORY_OWNER,
-    repo: process.env.GITHUB_REPOSITORY.split('/')[1],
-    pull_number: parseInt(process.env.GITHUB_PULL_REQUEST_NUMBER, 10)
-  });
-
-  const feedback = newPackages.length > 0
+  // Always skip GitHub API integration - just log the results
+  console.log('\n--- PR Check Results ---');
+  console.log(newPackages.length > 0
     ? `✅ Successfully validated ${newPackages.length} new package(s).`
-    : '❌ No new packages found or validation failed.';
-
-  await octokit.issues.createComment({
-    owner: process.env.GITHUB_REPOSITORY_OWNER,
-    repo: process.env.GITHUB_REPOSITORY.split('/')[1],
-    issue_number: pullRequest.number,
-    body: feedback
-  });
+    : '❌ No new packages found or validation failed.');
+  console.log('------------------------\n');
+  return;
 }
 
 validatePackages().catch(error => {

@@ -5,6 +5,7 @@ import * as path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import * as TOML from '@iarna/toml';
+import { loadAllPackages, addPackage } from '../utils/package-registry.js';
 
 const execAsync = promisify(exec);
 const __filename = fileURLToPath(import.meta.url);
@@ -17,7 +18,7 @@ interface PackageInfo {
   sourceUrl: string;
   homepage: string;
   license: string;
-  runtime?: 'node' | 'python';
+  runtime: 'node' | 'python';
 }
 
 interface RepoConfig {
@@ -121,18 +122,15 @@ async function extractPythonPackage(pyprojectPath: string, repoUrl: string, subP
 
 export async function extractPackageInfo(): Promise<PackageInfo[]> {
   const tempDir = path.join(__dirname, '../../temp');
-  const outputPath = path.join(__dirname, '../../packages/package-list.json');
+  const packagesDir = path.join(__dirname, '../../packages');
   const commitMsgPath = path.join(__dirname, '../../temp/commit-msg.txt');
 
   console.log("Starting package extraction...");
 
   try {
     // Load existing packages
-    let existingPackages: PackageInfo[] = [];
-    if (fs.existsSync(outputPath)) {
-      existingPackages = JSON.parse(fs.readFileSync(outputPath, 'utf8'));
-    }
-
+    const existingPackages = loadAllPackages();
+    
     // Create temp directory if it doesn't exist
     if (!fs.existsSync(tempDir)) {
       fs.mkdirSync(tempDir, { recursive: true });
@@ -212,6 +210,9 @@ export async function extractPackageInfo(): Promise<PackageInfo[]> {
           if (oldPkg.runtime !== newPkg.runtime) changeDetails.push('runtime');
           
           changes.push(`- Updated ${newPkg.name} (changed: ${changeDetails.join(', ')})`);
+          
+          // Update package in registry
+          addPackage(newPkg);
         }
       } else {
         // Add new package
@@ -219,13 +220,15 @@ export async function extractPackageInfo(): Promise<PackageInfo[]> {
         hasChanges = true;
         console.log(`Added new package: ${newPkg.name} (${newPkg.runtime})`);
         changes.push(`- Added new package: ${newPkg.name} (${newPkg.runtime})`);
+        
+        // Add package to registry
+        addPackage(newPkg);
       }
     }
 
-    // Write updated packages to file if there are changes
+    // Write commit message with total number of changes if there are changes
     if (hasChanges) {
-      fs.writeFileSync(outputPath, JSON.stringify(mergedPackages, null, 2));
-      console.log('Package list updated successfully');
+      console.log('Package registry updated successfully');
       
       // Write commit message with total number of changes
       if (changes.length === 0) {

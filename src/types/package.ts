@@ -6,6 +6,13 @@ export interface Package {
     sourceUrl: string;
     homepage: string;
     license: string;
+    environmentVariables?: {
+        [key: string]: {
+            description: string;
+            required: boolean;
+            argName?: string;
+        }
+    };
 }
 
 export interface ResolvedPackage extends Package {
