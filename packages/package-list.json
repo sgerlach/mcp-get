@@ -1,5 +1,14 @@
 [
   {
+    "name": "@octomind/octomind-mcp",
+    "description": "MCP server to interact with e2e testing platform of octomind",
+    "vendor": "octomind gmbh",
+    "sourceUrl": "https://github.com/OctoMind-dev/octomind-mcp",
+    "homepage": "https://github.com/OctoMind-dev/octomind-mcp",
+    "license": "MIT",
+    "runtime": "node"
+  },
+  {
     "name": "auto-coder",
     "description": "MCP server for auto-coder.rag",
     "vendor": "allwefantasy",

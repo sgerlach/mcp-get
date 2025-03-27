@@ -1,6 +1,14 @@
 import { PackageHelpers } from '../types/index.js';
 
 export const packageHelpers: PackageHelpers = {
+  '@octomind/octomind-mcp': {
+    requiredEnvVars: {
+      APIKEY: {
+        description: 'API key for octomind',
+        required: true
+      }
+    }
+  },
   '@modelcontextprotocol/server-brave-search': {
     requiredEnvVars: {
       BRAVE_API_KEY: {
