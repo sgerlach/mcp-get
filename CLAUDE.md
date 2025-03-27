@@ -35,5 +35,24 @@
 - To add a new package:
   1. Create a JSON file with the package metadata
   2. Use `npm run registry:add <package-file.json>` to validate and add it to the registry
+  3. Always run `npm run pr-check` before submitting a PR to validate package structure
 - Environment variables should be included in the package file under the `environmentVariables` key
 - The system will automatically find all packages by scanning the directory
+
+## PR Guidelines for Package Additions
+- Always run `npm run pr-check` before opening a PR to validate packages
+- Package files must follow the standard format with all required fields
+- For scoped packages (e.g., `@scope/name`), use double hyphens in filename (e.g., `scope--name.json`)
+- Include an `environmentVariables` object even when empty
+- Verify package name matches sourceUrl owner/format
+- Ensure the license is correctly specified
+- Maintain proper runtime specification (node/python)
+
+### Converting from Old Format
+- When a PR uses the old package-list.json format:
+  1. Convert to individual package files in packages/ directory
+  2. Follow proper naming convention (especially for scoped packages)
+  3. Preserve all metadata from original PR exactly
+  4. Ensure file format matches existing packages
+  5. Reference the original PR and explain the reformatting in your new PR
+  6. Close the original PR with a reference to your new PR
