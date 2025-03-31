@@ -4,7 +4,7 @@
   "vendor": "Rememberizer®",
   "sourceUrl": "https://github.com/skydeckai/mcp-server-rememberizer",
   "homepage": "https://rememberizer.ai/",
-  "license": "MIT",
+  "license": "Apache 2.0",
   "runtime": "python",
   "environmentVariables": {
     "REMEMBERIZER_API_TOKEN": {

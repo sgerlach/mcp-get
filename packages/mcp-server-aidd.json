@@ -4,7 +4,7 @@
   "vendor": "SkyDeck.ai®",
   "sourceUrl": "https://github.com/skydeckai/mcp-server-aidd",
   "homepage": "https://skydeck.ai/",
-  "license": "MIT",
+  "license": "Apache 2.0",
   "runtime": "python",
   "environmentVariables": {}
 }
