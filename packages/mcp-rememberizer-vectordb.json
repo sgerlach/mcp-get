@@ -4,7 +4,7 @@
   "vendor": "Rememberizer®",
   "sourceUrl": "https://github.com/skydeckai/mcp-rememberizer-vectordb",
   "homepage": "https://rememberizer.ai/",
-  "license": "MIT",
+  "license": "Apache 2.0",
   "runtime": "python",
   "environmentVariables": {
     "REMEMBERIZER_VECTOR_STORE_API_KEY": {
