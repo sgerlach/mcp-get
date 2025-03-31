@@ -1,6 +1,14 @@
 import { PackageHelpers } from '../types/index.js';
 
 export const packageHelpers: PackageHelpers = {
+  '@octomind/octomind-mcp': {
+    requiredEnvVars: {
+      APIKEY: {
+        description: 'API key for octomind',
+        required: true
+      }
+    }
+  },
   '@modelcontextprotocol/server-brave-search': {
     requiredEnvVars: {
       BRAVE_API_KEY: {
@@ -178,4 +186,44 @@ export const packageHelpers: PackageHelpers = {
       },
     },
   },
+  '@chanmeng666/google-news-server': {
+    requiredEnvVars: {
+      SERP_API_KEY: {
+        description: 'API key for Google News search',
+        required: true
+      }
+    }
+  },
+  'mcp-server-stability-ai': {
+    requiredEnvVars: {
+      STABILITY_AI_API_KEY: {
+        description: 'API key for Stability AI; get it from https://platform.stability.ai/account/keys.',
+        required: true
+      },
+      IMAGE_STORAGE_DIRECTORY: {
+        description: 'Absolute path to a directory on filesystem to store output images.',
+        required: true
+      }
+    }
+  },
+  '@niledatabase/nile-mcp-server': {
+    requiredEnvVars: {
+      NILE_API_KEY: {
+        description: 'API KEY for Nile',
+        required: true
+      },
+      NILE_WORKSPACE_SLUG: {
+        description: 'Nile workspace name',
+        required: true
+      }
+    }
+  },
+  'hyperbrowser-mcp': {
+    requiredEnvVars: {
+      HYPERBROWSER_API_KEY: {
+        description: 'API KEY for Hyperbrowser',
+        required: true
+      },
+    }
+  }
 };

@@ -12,6 +12,7 @@ export interface MCPServer {
 
 export interface MCPConfig {
     mcpServers: Record<string, MCPServer>;
+    [key: string]: any;  // Allow other config options
 }
 
 export interface MCPPreferences {
@@ -52,6 +53,7 @@ export class ConfigManager {
             }
             const config = JSON.parse(fs.readFileSync(this.configPath, 'utf8'));
             return {
+                ...config,
                 mcpServers: config.mcpServers || {}
             };
         } catch (error) {
@@ -100,7 +102,7 @@ export class ConfigManager {
     static isPackageInstalled(packageName: string): boolean {
         const config = this.readConfig();
         const serverName = packageName.replace(/\//g, '-');
-        return serverName in (config.mcpServers || {});
+        return serverName in (config.mcpServers || {}) || packageName in (config.mcpServers || {});
     }
 
     static async installPackage(pkg: Package, envVars?: Record<string, string>): Promise<void> {
@@ -129,12 +131,22 @@ export class ConfigManager {
         const config = this.readConfig();
         const serverName = packageName.replace(/\//g, '-');
 
-        if (!config.mcpServers || !config.mcpServers[serverName]) {
+        // Check for exact package name or server name using dash notation
+        if (!config.mcpServers) {
             console.log(`Package ${packageName} is not installed.`);
             return;
         }
 
-        delete config.mcpServers[serverName];
+        // Check both formats - package may be stored with slashes or dashes
+        if (config.mcpServers[serverName]) {
+            delete config.mcpServers[serverName];
+        } else if (config.mcpServers[packageName]) {
+            delete config.mcpServers[packageName];
+        } else {
+            console.log(`Package ${packageName} is not installed.`);
+            return;
+        }
+
         this.writeConfig(config);
     }
 } 

@@ -1,12 +1,13 @@
 {
   "name": "@michaellatman/mcp-get",
-  "version": "1.0.53",
+  "version": "1.0.80",
   "description": "A NPX command to install and list packages",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc && chmod +x dist/index.js",
     "start": "node dist/index.js",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest --config jest.config.mjs",
+    "test:file": "NODE_OPTIONS=--experimental-vm-modules jest --config jest.config.mjs",
     "test:list": "node --loader ts-node/esm src/index.ts list",
     "test:install": "node --loader ts-node/esm src/index.ts install",
     "test:installed": "node --loader ts-node/esm src/index.ts installed",
@@ -20,7 +21,9 @@
     "pr-check": "node src/scripts/pr-check.js",
     "test:watch": "NODE_OPTIONS=--experimental-vm-modules jest --config jest.config.mjs --watch",
     "test:coverage": "NODE_OPTIONS=--experimental-vm-modules jest --config jest.config.mjs --coverage",
-    "prepare": "npm run build"
+    "prepare": "npm run build",
+    "registry:convert": "node src/scripts/convert-packages.js",
+    "registry:add": "node src/scripts/add-package.js"
   },
   "bin": {
     "mcp-get": "dist/index.js"
