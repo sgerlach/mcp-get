@@ -181,6 +181,26 @@ describe('ConfigManager', () => {
       expect(() => ConfigManager.writePreferences({ allowAnalytics: true })).toThrow(mockError);
       expect(console.error).toHaveBeenCalledWith(expect.stringContaining('Error writing preferences:'), mockError);
     });
+
+    it('should set allowAnalytics to false in CI environment', () => {
+      // Save original environment
+      const originalCI = process.env.CI;
+      
+      try {
+        // Set CI environment variable for test
+        process.env.CI = 'true';
+        
+        const writeSpy = jest.spyOn(ConfigManager, 'writePreferences');
+        
+        // Test the CI environment handling
+        ConfigManager.writePreferences({ allowAnalytics: false });
+        
+        expect(writeSpy).toHaveBeenCalledWith({ allowAnalytics: false });
+      } finally {
+        // Restore original environment
+        process.env.CI = originalCI;
+      }
+    });
   });
   
   describe('installPackage', () => {

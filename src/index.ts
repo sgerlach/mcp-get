@@ -37,6 +37,10 @@ async function main() {
       console.log('  uninstall [package]   Uninstall a package');
       console.log('  installed             List installed packages');
       console.log('  update                Update mcp-get to latest version');
+      console.log('');
+      console.log('Options:');
+      console.log('  --ci                  Skip interactive prompts (for CI environments)');
+      console.log('  --restart-claude      Automatically restart Claude without prompting');
       process.exit(1);
   }
 }

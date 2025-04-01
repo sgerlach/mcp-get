@@ -17,6 +17,15 @@ async function checkAnalyticsConsent(): Promise<boolean> {
     return prefs.allowAnalytics;
   }
 
+  // Check if running in CI environment (process.env.CI is set) or --ci flag is used
+  const isCI = process.env.CI === 'true' || process.argv.includes('--ci');
+  
+  if (isCI) {
+    // In CI environments, default to false and save the preference
+    ConfigManager.writePreferences({ ...prefs, allowAnalytics: false });
+    return false;
+  }
+
   const { allowAnalytics } = await inquirer.prompt<{ allowAnalytics: boolean }>([{
     type: 'confirm',
     name: 'allowAnalytics',
@@ -50,6 +59,9 @@ async function promptForEnvVars(packageName: string): Promise<Record<string, str
     return undefined;
   }
 
+  // Check if running in CI environment (process.env.CI is set) or --ci flag is used
+  const isCI = process.env.CI === 'true' || process.argv.includes('--ci');
+
   // Check if all required variables exist in environment
   const existingEnvVars: Record<string, string> = {};
   let hasAllRequired = true;
@@ -61,6 +73,16 @@ async function promptForEnvVars(packageName: string): Promise<Record<string, str
     } else if (value.required) {
       hasAllRequired = false;
     }
+  }
+
+  // In CI environments, use existing env vars if available, but error if required ones are missing
+  if (isCI) {
+    if (!hasAllRequired) {
+      console.error('\nError: Required environment variables are missing in CI mode.');
+      console.error('Make sure all required environment variables are set in your CI environment.');
+      process.exit(1);
+    }
+    return existingEnvVars;
   }
 
   if (hasAllRequired && Object.keys(existingEnvVars).length > 0) {
@@ -164,20 +186,37 @@ async function isClaudeRunning(): Promise<boolean> {
 }
 
 async function promptForRestart(): Promise<boolean> {
+  // Check if running in CI environment
+  const isCI = process.env.CI === 'true' || process.argv.includes('--ci');
+  // Check if restart is explicitly requested
+  const restartClaude = process.argv.includes('--restart-claude');
+  
+  // Skip all prompts in CI mode unless restart is requested
+  if (isCI && !restartClaude) {
+    return false;
+  }
+
   // Check if Claude is running first
   const claudeRunning = await isClaudeRunning();
   if (!claudeRunning) {
     return false;
   }
 
-  const { shouldRestart } = await inquirer.prompt<{ shouldRestart: boolean }>([
-    {
-      type: 'confirm',
-      name: 'shouldRestart',
-      message: 'Would you like to restart the Claude desktop app to apply changes?',
-      default: true
-    }
-  ]);
+  // Restart without prompting if --restart-claude flag is used
+  let shouldRestart = restartClaude;
+  
+  // Prompt only if not explicitly restarting
+  if (!restartClaude) {
+    const result = await inquirer.prompt<{ shouldRestart: boolean }>([
+      {
+        type: 'confirm',
+        name: 'shouldRestart',
+        message: 'Would you like to restart the Claude desktop app to apply changes?',
+        default: true
+      }
+    ]);
+    shouldRestart = result.shouldRestart;
+  }
   
   if (shouldRestart) {
     console.log('Restarting Claude desktop app...');
