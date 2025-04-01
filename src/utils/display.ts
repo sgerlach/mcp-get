@@ -13,6 +13,17 @@ export async function displayPackageDetailsWithActions(pkg: ResolvedPackage): Pr
   console.log(chalk.bold('Homepage:    ') + (pkg.homepage || 'Not available'));
   console.log(chalk.bold('Status:      ') + (pkg.isInstalled ? chalk.green('Installed') : 'Not installed') + 
     (pkg.isVerified ? '' : chalk.yellow(' (Unverified package)')));
+  
+  // Display environment variables if available
+  if (pkg.environmentVariables && Object.keys(pkg.environmentVariables).length > 0) {
+    console.log(chalk.bold('\nEnvironment Variables:'));
+    for (const [key, value] of Object.entries(pkg.environmentVariables)) {
+      console.log(chalk.bold(`  ${key}: `) + 
+        value.description + 
+        (value.required ? chalk.red(' (Required)') : chalk.gray(' (Optional)')));
+    }
+    console.log(''); // Add an extra line after environment variables
+  }
 
   const choices = [
     { name: pkg.isInstalled ? '🔄 Reinstall this package' : '📦 Install this package', value: 'install' },
