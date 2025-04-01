@@ -155,9 +155,15 @@ async function validatePackagePublication(pkg) {
     }
   } else if (runtime === 'python') {
     try {
-      execSync(`pip install --dry-run ${name}`, { stdio: 'pipe' });
+      const output = execSync(`pip install --dry-run ${name} 2>&1`, { encoding: 'utf-8' });
+      console.log(`pip install output: ${output}`);
     } catch (error) {
-      throw new Error(`Package ${name} is not published on PyPI. Please publish it first.`);
+      // Check if the error is due to Python version requirements
+      if (error.stdout && error.stdout.includes('Ignored the following versions that require a different python version')) {
+        console.log(`Package ${name} exists on PyPI but requires a different Python version. This is acceptable.`);
+      } else {
+        throw new Error(`Package ${name} is not published on PyPI. Please publish it first.`);
+      }
     }
   }
 }
