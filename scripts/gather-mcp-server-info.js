@@ -59,25 +59,22 @@ async function extractGitHubInfo(repoUrl) {
   console.log(`\nGathering information for ${owner}/${repo}...`);
   
   try {
-    const repoApiUrl = `https://api.github.com/repos/${owner}/${repo}`;
-    const repoData = await fetchUrl(repoApiUrl);
-    const repoInfo = JSON.parse(repoData);
+    const { stdout: repoDataStr } = await exec(`gh api repos/${owner}/${repo}`);
+    const repoInfo = JSON.parse(repoDataStr);
     
     let packageInfo = null;
     let runtime = null;
     let packageName = null;
     
     try {
-      const packageJsonUrl = `https://raw.githubusercontent.com/${owner}/${repo}/main/package.json`;
-      const packageJsonData = await fetchUrl(packageJsonUrl);
+      const { stdout: packageJsonData } = await exec(`gh api repos/${owner}/${repo}/contents/package.json --raw`);
       packageInfo = JSON.parse(packageJsonData);
       runtime = 'node';
       packageName = packageInfo.name;
-    } catch (error) {
+    } catch (pkgError) {
       console.log('No package.json found, checking for pyproject.toml...');
       try {
-        const pyprojectUrl = `https://raw.githubusercontent.com/${owner}/${repo}/main/pyproject.toml`;
-        const pyprojectData = await fetchUrl(pyprojectUrl);
+        const { stdout: pyprojectData } = await exec(`gh api repos/${owner}/${repo}/contents/pyproject.toml --raw`);
         const nameMatch = pyprojectData.match(/name\s*=\s*["']([^"']+)["']/);
         if (nameMatch) {
           packageName = nameMatch[1];
@@ -91,8 +88,8 @@ async function extractGitHubInfo(repoUrl) {
     
     let readmeContent = null;
     try {
-      const readmeUrl = `https://raw.githubusercontent.com/${owner}/${repo}/main/README.md`;
-      readmeContent = await fetchUrl(readmeUrl);
+      const { stdout: readmeData } = await exec(`gh api repos/${owner}/${repo}/contents/README.md --raw`);
+      readmeContent = readmeData;
     } catch (error) {
       console.log('README.md not found.');
     }
@@ -100,8 +97,8 @@ async function extractGitHubInfo(repoUrl) {
     let licenseContent = null;
     let license = repoInfo.license ? repoInfo.license.spdx_id : 'Unknown';
     try {
-      const licenseUrl = `https://raw.githubusercontent.com/${owner}/${repo}/main/LICENSE`;
-      licenseContent = await fetchUrl(licenseUrl);
+      const { stdout: licenseData } = await exec(`gh api repos/${owner}/${repo}/contents/LICENSE --raw`);
+      licenseContent = licenseData;
     } catch (error) {
       console.log('LICENSE file not found, using license from repo info:', license);
     }
