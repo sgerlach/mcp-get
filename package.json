@@ -23,7 +23,9 @@
     "test:coverage": "NODE_OPTIONS=--experimental-vm-modules jest --config jest.config.mjs --coverage",
     "prepare": "npm run build",
     "registry:convert": "node src/scripts/convert-packages.js",
-    "registry:add": "node src/scripts/add-package.js"
+    "registry:add": "node src/scripts/add-package.js",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix"
   },
   "bin": {
     "mcp-get": "dist/index.js"
@@ -47,6 +49,9 @@
     "@types/inquirer-autocomplete-prompt": "^3.0.3",
     "@types/jest": "^29.5.14",
     "@types/node": "^14.18.63",
+    "@typescript-eslint/eslint-plugin": "^8.29.0",
+    "@typescript-eslint/parser": "^8.29.0",
+    "eslint": "^9.23.0",
     "jest": "^29.7.0",
     "ts-jest": "^29.2.5",
     "ts-node": "^10.9.1"
