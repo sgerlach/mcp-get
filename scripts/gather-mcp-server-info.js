@@ -8,13 +8,14 @@
  * Example: node gather-mcp-server-info.js https://github.com/magarcia/mcp-server-giphy
  */
 
-const { execSync } = require('child_process');
-const fs = require('fs');
-const path = require('path');
-const https = require('https');
-const { promisify } = require('util');
+import { execSync } from 'child_process';
+import fs from 'fs';
+import path from 'path';
+import https from 'https';
+import { promisify } from 'util';
+import { exec as execCallback } from 'child_process';
 
-const exec = promisify(require('child_process').exec);
+const exec = promisify(execCallback);
 
 function fetchUrl(url) {
   return new Promise((resolve, reject) => {
@@ -183,16 +184,18 @@ async function extractGitHubInfo(repoUrl) {
   }
 }
 
-async function main() {
-  const repoUrl = process.argv[2];
-  
-  if (!repoUrl) {
-    console.log('Usage: node gather-mcp-server-info.js <github-repo-url>');
-    console.log('Example: node gather-mcp-server-info.js https://github.com/magarcia/mcp-server-giphy');
-    process.exit(1);
-  }
-  
-  await extractGitHubInfo(repoUrl);
+const repoUrl = process.argv[2];
+
+if (!repoUrl) {
+  console.log('Usage: node gather-mcp-server-info.js <github-repo-url>');
+  console.log('Example: node gather-mcp-server-info.js https://github.com/magarcia/mcp-server-giphy');
+  process.exit(1);
 }
 
-main().catch(console.error);
+(async () => {
+  try {
+    await extractGitHubInfo(repoUrl);
+  } catch (error) {
+    console.error(error);
+  }
+})();
