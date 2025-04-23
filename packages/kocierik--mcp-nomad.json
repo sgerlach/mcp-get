@@ -1,0 +1,10 @@
+{
+  "name": "@kocierik/mcp-nomad",
+  "description": "MCP server connecting to Nomad",
+  "vendor": "Erik Koci (https://teapot.ovh/@erik)",
+  "sourceUrl": "https://github.com/kocierik/mcp-nomad",
+  "homepage": "https://github.com/kocierik/mcp-nomad",
+  "license": "MIT",
+  "runtime": "node",
+  "environmentVariables": {}
+}
