@@ -4,22 +4,23 @@ import inquirer from 'inquirer';
 import chalk from 'chalk';
 import { resolvePackages } from '../utils/package-resolver.js';
 
-async function promptForRuntime(): Promise<'node' | 'python'> {
-  const { runtime } = await inquirer.prompt<{ runtime: 'node' | 'python' }>([
+async function promptForRuntime(): Promise<'node' | 'python' | 'go'> {
+  const { runtime } = await inquirer.prompt<{ runtime: 'node' | 'python' | 'go' }>([
     {
       type: 'list',
       name: 'runtime',
       message: 'What runtime does this package use?',
       choices: [
         { name: 'Node.js', value: 'node' },
-        { name: 'Python', value: 'python' }
+        { name: 'Python', value: 'python' },
+        { name: 'Go', value: 'go' }
       ]
     }
   ]);
   return runtime;
 }
 
-function createUnknownPackage(packageName: string, runtime: 'node' | 'python', version?: string): Package {
+function createUnknownPackage(packageName: string, runtime: 'node' | 'python' | 'go', version?: string): Package {
   return {
     name: packageName,
     description: 'Unverified package',
@@ -73,4 +74,4 @@ export async function install(packageName: string, version?: string): Promise<vo
   }
 
   await installPkg(pkg);
-}     
+}                    

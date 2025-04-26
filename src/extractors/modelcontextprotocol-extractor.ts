@@ -18,14 +18,14 @@ interface PackageInfo {
   sourceUrl: string;
   homepage: string;
   license: string;
-  runtime: 'node' | 'python';
+  runtime: 'node' | 'python' | 'go';
 }
 
 interface RepoConfig {
   url: string;
   branch: string;
   packagePath: string;
-  runtime: 'node' | 'python' | 'mixed';
+  runtime: 'node' | 'python' | 'go' | 'mixed';
 }
 
 interface PyProjectToml {

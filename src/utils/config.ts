@@ -16,7 +16,7 @@ export interface MCPServerConfig {
   command: string;
   args: string[];
   env?: Record<string, string>;
-  runtime?: 'node' | 'python';
+  runtime?: 'node' | 'python' | 'go';
 }
 
 export interface ClaudeConfig {
@@ -24,7 +24,7 @@ export interface ClaudeConfig {
   [key: string]: any;
 }
 
-function getPackageRuntime(packageName: string): 'node' | 'python' {
+function getPackageRuntime(packageName: string): 'node' | 'python' | 'go' {
   const pkg = loadPackage(packageName);
   return pkg?.runtime || 'node';
 }
@@ -57,7 +57,7 @@ export function writeConfig(config: ClaudeConfig): void {
   fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
 }
 
-export async function installMCPServer(packageName: string, envVars?: Record<string, string>, runtime?: 'node' | 'python'): Promise<void> {
+export async function installMCPServer(packageName: string, envVars?: Record<string, string>, runtime?: 'node' | 'python' | 'go'): Promise<void> {
   const config = readConfig();
   const serverName = packageName.replace(/\//g, '-');
   
@@ -75,13 +75,17 @@ export async function installMCPServer(packageName: string, envVars?: Record<str
     } catch (error) {
       command = 'uvx'; // Fallback to just 'uvx' if which fails
     }
+  } else if (effectiveRuntime === 'go') {
+    command = 'go';
   }
   
   const serverConfig: MCPServerConfig = {
     runtime: effectiveRuntime,
     env: envVars,
     command,
-    args: effectiveRuntime === 'python' ? [packageName] : ['-y', packageName]
+    args: effectiveRuntime === 'python' ? [packageName] : 
+          effectiveRuntime === 'go' ? ['run', packageName] : 
+          ['-y', packageName]
   };
   
   config.mcpServers[serverName] = serverConfig;
@@ -93,4 +97,4 @@ export function envVarsToArgs(envVars: Record<string, string>): string[] {
     const argName = key.toLowerCase().replace(/_/g, '-');
     return [`--${argName}`, value];
   }).flat();
-} 
+}          

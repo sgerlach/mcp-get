@@ -1,7 +1,7 @@
 export interface Package {
     name: string;
     description: string;
-    runtime: 'node' | 'python';
+    runtime: 'node' | 'python' | 'go';
     vendor: string;
     sourceUrl: string;
     homepage: string;
@@ -30,9 +30,9 @@ export interface PackageHelper {
         }
     };
     configureEnv?: (config: any) => Promise<void>;
-    runtime?: 'node' | 'python';
+    runtime?: 'node' | 'python' | 'go';
 }
 
 export interface PackageHelpers {
     [packageName: string]: PackageHelper;
-}  
+}        
