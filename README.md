@@ -8,7 +8,7 @@ With mcp-get, you can:
 - Manage environment variables and configurations
 - Update and uninstall servers as needed
 
-> **Note**: All packages added to the registry are automatically displayed on [mcp-get.com](https://mcp-get.com), making them discoverable to other users.
+All packages added to the registry are automatically displayed on [mcp-get.com](https://mcp-get.com), making them discoverable to other users.
 
 ## About Model Context Protocol
 
