@@ -2,6 +2,8 @@
 
 A command-line tool for installing and managing Model Context Protocol (MCP) servers.
 
+> **Note**: All packages added to the registry are automatically displayed on [mcp-get.com](https://mcp-get.com), making them discoverable to other users.
+
 ## About Model Context Protocol
 
 The Model Context Protocol (MCP) is an open protocol that enables seamless integration between LLM applications and external data sources and tools. Whether you're building an AI-powered IDE, enhancing a chat interface, or creating custom AI workflows, MCP provides a standardized way to connect LLMs with the context they need.
@@ -104,8 +106,6 @@ If you have any questions or need help, feel free to reach out:
 ## Adding Your Own MCP Server to the Registry
 
 There are two ways to add your MCP server to the registry:
-
-> **Note**: All packages added to the registry are automatically displayed on [mcp-get.com](https://mcp-get.com), making them discoverable to other users.
 
 ### Option 1: Manual Package Addition
 
