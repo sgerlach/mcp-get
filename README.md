@@ -1,6 +1,12 @@
 # mcp-get
 
-A command-line tool for installing and managing Model Context Protocol (MCP) servers.
+A powerful command-line tool for discovering, installing, and managing Model Context Protocol (MCP) servers. This tool simplifies the process of connecting Large Language Models (LLMs) to external data sources, tools, and services.
+
+With mcp-get, you can:
+- Discover available MCP servers from our curated registry
+- Install servers with a single command
+- Manage environment variables and configurations
+- Update and uninstall servers as needed
 
 > **Note**: All packages added to the registry are automatically displayed on [mcp-get.com](https://mcp-get.com), making them discoverable to other users.
 
