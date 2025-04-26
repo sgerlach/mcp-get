@@ -19,7 +19,7 @@ async function promptForRuntime(): Promise<'node' | 'python'> {
   return runtime;
 }
 
-function createUnknownPackage(packageName: string, runtime: 'node' | 'python'): Package {
+function createUnknownPackage(packageName: string, runtime: 'node' | 'python', version?: string): Package {
   return {
     name: packageName,
     description: 'Unverified package',
@@ -27,7 +27,8 @@ function createUnknownPackage(packageName: string, runtime: 'node' | 'python'): 
     vendor: '',
     sourceUrl: '',
     homepage: '',
-    license: ''
+    license: '',
+    version
   };
 }
 
@@ -35,7 +36,7 @@ export async function installPackage(pkg: Package): Promise<void> {
   return installPkg(pkg);
 }
 
-export async function install(packageName: string): Promise<void> {
+export async function install(packageName: string, version?: string): Promise<void> {
   const packages = resolvePackages();
   const pkg = packages.find(p => p.name === packageName);
 
@@ -46,19 +47,19 @@ export async function install(packageName: string): Promise<void> {
       {
         type: 'confirm',
         name: 'proceedWithInstall',
-        message: `Would you like to try installing ${packageName} anyway? This package hasn't been verified.`,
+        message: `Would you like to try installing ${packageName}${version ? ` version ${version}` : ''} anyway? This package hasn't been verified.`,
         default: false
       }
     ]);
 
     if (proceedWithInstall) {
-      console.log(chalk.cyan(`Proceeding with installation of ${packageName}...`));
+      console.log(chalk.cyan(`Proceeding with installation of ${packageName}${version ? ` version ${version}` : ''}...`));
       
       // Prompt for runtime for unverified packages
       const runtime = await promptForRuntime();
       
       // Create a basic package object for unverified packages
-      const unknownPkg = createUnknownPackage(packageName, runtime);
+      const unknownPkg = createUnknownPackage(packageName, runtime, version);
       await installPkg(unknownPkg);
     } else {
       console.log('Installation cancelled.');
@@ -67,5 +68,9 @@ export async function install(packageName: string): Promise<void> {
     return;
   }
 
+  if (version) {
+    pkg.version = version;
+  }
+
   await installPkg(pkg);
-} 
+}     

@@ -6,6 +6,7 @@ export interface Package {
     sourceUrl: string;
     homepage: string;
     license: string;
+    version?: string; // Optional version field to specify package version
     environmentVariables?: {
         [key: string]: {
             description: string;
@@ -34,4 +35,4 @@ export interface PackageHelper {
 
 export interface PackageHelpers {
     [packageName: string]: PackageHelper;
-} 
+}  
