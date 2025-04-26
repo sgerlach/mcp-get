@@ -105,6 +105,8 @@ If you have any questions or need help, feel free to reach out:
 
 There are two ways to add your MCP server to the registry:
 
+> **Note**: All packages added to the registry are automatically displayed on [mcp-get.com](https://mcp-get.com), making them discoverable to other users.
+
 ### Option 1: Manual Package Addition
 
 If you want to maintain your own package:
