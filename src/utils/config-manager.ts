@@ -8,6 +8,7 @@ export interface MCPServer {
     command?: string;
     args?: string[];
     env?: Record<string, string>;
+    version?: string; // Add version field to track installed version
 }
 
 export interface MCPConfig {
@@ -111,16 +112,17 @@ export class ConfigManager {
 
         const serverConfig: MCPServer = {
             runtime: pkg.runtime,
-            env: envVars
+            env: envVars,
+            version: pkg.version // Store version information
         };
 
-        // Add command and args based on runtime
+        // Add command and args based on runtime and version
         if (pkg.runtime === 'node') {
             serverConfig.command = 'npx';
-            serverConfig.args = ['-y', pkg.name];
+            serverConfig.args = ['-y', pkg.version ? `${pkg.name}@${pkg.version}` : pkg.name];
         } else if (pkg.runtime === 'python') {
             serverConfig.command = 'uvx';
-            serverConfig.args = [pkg.name];
+            serverConfig.args = [pkg.version ? `${pkg.name}==${pkg.version}` : pkg.name];
         }
 
         config.mcpServers[serverName] = serverConfig;
@@ -149,4 +151,4 @@ export class ConfigManager {
 
         this.writeConfig(config);
     }
-} 
+}    

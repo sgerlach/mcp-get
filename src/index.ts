@@ -8,6 +8,7 @@ import { updatePackage } from './auto-update.js';
 
 const command = process.argv[2];
 const packageName = process.argv[3];
+const version = process.argv[4]; // Add support for version parameter
 
 async function main() {
   switch (command) {
@@ -19,7 +20,7 @@ async function main() {
         console.error('Please provide a package name to install');
         process.exit(1);
       }
-      await install(packageName);
+      await install(packageName, version); // Pass version to install function
       break;
     case 'uninstall':
       await uninstall(packageName);
@@ -33,7 +34,7 @@ async function main() {
     default:
       console.log('Available commands:');
       console.log('  list                  List all available packages');
-      console.log('  install <package>     Install a package');
+      console.log('  install <package> [version]     Install a package with optional version');
       console.log('  uninstall [package]   Uninstall a package');
       console.log('  installed             List installed packages');
       console.log('  update                Update mcp-get to latest version');

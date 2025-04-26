@@ -49,6 +49,24 @@ Installing @modelcontextprotocol/server-brave-search...
 Installation complete.
 ```
 
+#### Install a Specific Version
+
+You can also install a specific version of a package:
+
+```
+npx @michaellatman/mcp-get@latest install @modelcontextprotocol/server-brave-search 1.0.0
+```
+
+Sample output:
+```
+Installing @modelcontextprotocol/server-brave-search version 1.0.0...
+Installation complete.
+```
+
+The version syntax follows standard package manager conventions:
+- For Node.js packages: `package@version` (e.g., `@modelcontextprotocol/server-brave-search@1.0.0`)
+- For Python packages: `package==version` (e.g., `mcp-server-aidd==0.1.19`)
+
 ### List Packages
 
 ```

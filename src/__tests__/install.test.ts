@@ -154,4 +154,43 @@ describe('install', () => {
     expect(mockResolvePackages).toHaveBeenCalled();
     expect(mockInstallPkg).toHaveBeenCalledWith(testPackage);
   });
+
+  it('should handle installing a specific version of a package', async () => {
+    const testPackage: ResolvedPackage = {
+      name: 'test-package',
+      description: 'A test package',
+      runtime: 'node',
+      vendor: 'Test Vendor',
+      sourceUrl: 'https://example.com',
+      homepage: 'https://example.com',
+      license: 'MIT',
+      isInstalled: false,
+      isVerified: true
+    };
+    
+    mockResolvePackages.mockReturnValueOnce([testPackage]);
+    
+    await install('test-package', '1.2.3');
+    
+    // Verify the package has the version field set and is passed to installPkg
+    expect(mockInstallPkg).toHaveBeenCalledWith(expect.objectContaining({
+      name: 'test-package',
+      version: '1.2.3'
+    }));
+  });
+  
+  it('should handle installing a specific version of an unverified package', async () => {
+    mockResolvePackages.mockReturnValueOnce([]);
+    mockPrompt
+      .mockResolvedValueOnce({ proceedWithInstall: true })
+      .mockResolvedValueOnce({ runtime: 'node' });
+    
+    await install('unknown-package', '2.0.0');
+    
+    expect(mockInstallPkg).toHaveBeenCalledWith(expect.objectContaining({
+      name: 'unknown-package',
+      version: '2.0.0',
+      runtime: 'node'
+    }));
+  });
 });
