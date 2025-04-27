@@ -18,14 +18,14 @@ interface PackageInfo {
   sourceUrl: string;
   homepage: string;
   license: string;
-  runtime: 'node' | 'python';
+  runtime: 'node' | 'python' | 'go';
 }
 
 interface RepoConfig {
   url: string;
   branch: string;
   packagePath: string;
-  runtime: 'node' | 'python' | 'mixed';
+  runtime: 'node' | 'python' | 'go' | 'mixed';
 }
 
 interface PyProjectToml {
@@ -181,6 +181,31 @@ export async function extractPackageInfo(): Promise<PackageInfo[]> {
           );
           if (pythonPackage) {
             newPackages.push(pythonPackage);
+            continue;
+          }
+        }
+        
+        // Try to extract as Go package
+        const goModPath = path.join(fullPath, 'go.mod');
+        if (fs.existsSync(goModPath)) {
+          try {
+            const goModContent = fs.readFileSync(goModPath, 'utf8');
+            const moduleMatch = goModContent.match(/^module\s+(.+)$/m);
+            const moduleName = moduleMatch ? moduleMatch[1].trim() : dir;
+            
+            const goPackage: PackageInfo = {
+              name: moduleName,
+              description: 'Go MCP server',
+              vendor: 'Go Module',
+              sourceUrl: `${repo.url.replace('.git', '')}/blob/main/${path.join(repo.packagePath, dir)}`,
+              homepage: repo.url.replace('.git', ''),
+              license: 'MIT', // Default license
+              runtime: 'go'
+            };
+            
+            newPackages.push(goPackage);
+          } catch (error) {
+            console.error(`Error extracting Go package from ${goModPath}:`, error);
           }
         }
       }

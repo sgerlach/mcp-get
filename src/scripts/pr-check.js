@@ -7,7 +7,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const REQUIRED_FIELDS = ['name', 'description', 'vendor', 'sourceUrl', 'homepage', 'license', 'runtime'];
-const VALID_RUNTIMES = ['node', 'python'];
+const VALID_RUNTIMES = ['node', 'python', 'go'];
 
 async function validatePackages() {
   const packageListPath = path.join(__dirname, '../../packages/package-list.json');
@@ -164,6 +164,12 @@ async function validatePackagePublication(pkg) {
       } else {
         throw new Error(`Package ${name} is not published on PyPI. Please publish it first.`);
       }
+    }
+  } else if (runtime === 'go') {
+    try {
+      execSync(`go list ${name}`, { stdio: 'pipe' });
+    } catch (error) {
+      throw new Error(`Package ${name} is not a valid Go package. Please ensure it's a valid Go module.`);
     }
   }
 }

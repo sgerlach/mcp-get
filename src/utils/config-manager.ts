@@ -4,7 +4,7 @@ import os from 'os';
 import { Package } from '../types/package.js';
 
 export interface MCPServer {
-    runtime: 'node' | 'python';
+    runtime: 'node' | 'python' | 'go';
     command?: string;
     args?: string[];
     env?: Record<string, string>;
@@ -123,6 +123,9 @@ export class ConfigManager {
         } else if (pkg.runtime === 'python') {
             serverConfig.command = 'uvx';
             serverConfig.args = [pkg.version ? `${pkg.name}==${pkg.version}` : pkg.name];
+        } else if (pkg.runtime === 'go') {
+            serverConfig.command = 'go';
+            serverConfig.args = ['run', pkg.version ? `${pkg.name}@${pkg.version}` : pkg.name];
         }
 
         config.mcpServers[serverName] = serverConfig;
@@ -151,4 +154,4 @@ export class ConfigManager {
 
         this.writeConfig(config);
     }
-}    
+}                

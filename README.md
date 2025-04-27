@@ -31,6 +31,7 @@ This tool helps you install and manage MCP servers that connect Claude to variou
 
 - Node.js (version 14 or higher) for Node.js-based MCP servers
 - Python (version 3.10 or higher) for Python-based MCP servers
+- Go (version 1.16 or higher) for Go-based MCP servers
 - Claude Desktop app (for local MCP server usage)
 
 > **Note**: This tool has not been thoroughly tested on Windows systems yet. While it may work, you might encounter some issues. Contributions to improve Windows compatibility are welcome!
@@ -66,6 +67,7 @@ Installation complete.
 The version syntax follows standard package manager conventions:
 - For Node.js packages: `package@version` (e.g., `@modelcontextprotocol/server-brave-search@1.0.0`)
 - For Python packages: `package==version` (e.g., `mcp-server-aidd==0.1.19`)
+- For Go packages: `package@version` (e.g., `example.com/go-server@v1.0.0`)
 
 ### List Packages
 
@@ -152,7 +154,7 @@ If you want to maintain your own package:
      "sourceUrl": "URL to the source code repository",
      "homepage": "URL to the homepage or documentation",
      "license": "License type (e.g., MIT)",
-     "runtime": "node | python",
+     "runtime": "node | python | go",
      "environmentVariables": {
        "SOME_API_KEY": {
          "description": "Description of what this key is for",

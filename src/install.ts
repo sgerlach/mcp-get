@@ -4,22 +4,23 @@ import inquirer from 'inquirer';
 import chalk from 'chalk';
 import { loadPackage } from './utils/package-registry.js';
 
-async function promptForRuntime(): Promise<'node' | 'python'> {
-  const { runtime } = await inquirer.prompt<{ runtime: 'node' | 'python' }>([
+async function promptForRuntime(): Promise<'node' | 'python' | 'go'> {
+  const { runtime } = await inquirer.prompt<{ runtime: 'node' | 'python' | 'go' }>([
     {
       type: 'list',
       name: 'runtime',
       message: 'What runtime does this package use?',
       choices: [
         { name: 'Node.js', value: 'node' },
-        { name: 'Python', value: 'python' }
+        { name: 'Python', value: 'python' },
+        { name: 'Go', value: 'go' }
       ]
     }
   ]);
   return runtime;
 }
 
-function createUnknownPackage(packageName: string, runtime: 'node' | 'python'): Package {
+function createUnknownPackage(packageName: string, runtime: 'node' | 'python' | 'go'): Package {
   return {
     name: packageName,
     description: 'Unverified package',

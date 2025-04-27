@@ -27,7 +27,7 @@ const packageSchema = {
     license: { type: 'string' },
     runtime: { 
       type: 'string',
-      enum: ['node', 'python']
+      enum: ['node', 'python', 'go']
     },
     environmentVariables: {
       type: 'object',
@@ -91,8 +91,8 @@ function validatePackageAgainstSchema(pkg: Package): string[] {
   if (pkg.runtime) {
     if (typeof pkg.runtime !== 'string') {
       errors.push('runtime must be a string');
-    } else if (!['node', 'python'].includes(pkg.runtime)) {
-      errors.push('runtime must be either "node" or "python"');
+    } else if (!['node', 'python', 'go'].includes(pkg.runtime)) {
+      errors.push('runtime must be either "node", "python", or "go"');
     }
   }
   
