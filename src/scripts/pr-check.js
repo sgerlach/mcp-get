@@ -9,6 +9,35 @@ const __dirname = path.dirname(__filename);
 const REQUIRED_FIELDS = ['name', 'description', 'vendor', 'sourceUrl', 'homepage', 'license', 'runtime'];
 const VALID_RUNTIMES = ['node', 'python', 'go'];
 
+/**
+ * Normalizes a package name for npm/PyPI validation
+ * Converts spaces to hyphens, makes lowercase, and handles special characters
+ */
+export function normalizePackageName(name, runtime) {
+  if (!name) return '';
+  
+  // Convert to lowercase and replace spaces with hyphens
+  let normalized = name.toLowerCase().replace(/\s+/g, '-');
+  
+  if (runtime === 'node') {
+    // For npm packages, remove special characters not allowed in npm package names
+    normalized = normalized.replace(/[^a-z0-9-_.]/g, '');
+  } else if (runtime === 'python') {
+    // For Python packages, replace underscores with hyphens for PyPI
+    normalized = normalized.replace(/_/g, '-');
+  }
+  
+  return normalized;
+}
+
+/**
+ * Converts a package name to a safe filename
+ * This matches the logic in package-registry.ts
+ */
+export function getPackageFilename(packageName) {
+  return packageName.replace(/^@/, '').replace(/\//g, '--');
+}
+
 async function validatePackages() {
   const packageListPath = path.join(__dirname, '../../packages/package-list.json');
   const packagesDir = path.join(__dirname, '../../packages');
@@ -33,6 +62,14 @@ async function validatePackages() {
         try {
           const content = fs.readFileSync(file, 'utf-8');
           const pkg = JSON.parse(content);
+          
+          // Validate filename matches package name
+          const filename = path.basename(file, '.json');
+          const expectedFilename = getPackageFilename(pkg.name);
+          if (filename !== expectedFilename) {
+            throw new Error(`Filename '${filename}' does not match expected filename '${expectedFilename}' for package '${pkg.name}'. Please rename the file.`);
+          }
+          
           newPackages.push(pkg);
         } catch (error) {
           console.warn(`Warning: Failed to parse package file ${file}: ${error.message}`);
@@ -146,30 +183,34 @@ export function validateRuntime(pkg) {
 async function validatePackagePublication(pkg) {
   const { name, runtime } = pkg;
   console.log(`Checking ${runtime} package publication...`);
+  
+  // Normalize the package name for npm/PyPI validation
+  const normalizedName = normalizePackageName(name, runtime);
+  console.log(`Normalized package name: ${normalizedName}`);
 
   if (runtime === 'node') {
     try {
-      execSync(`npm view ${name} version`, { stdio: 'pipe' });
+      execSync(`npm view ${normalizedName} version`, { stdio: 'pipe' });
     } catch (error) {
-      throw new Error(`Package ${name} is not published on npm. Please publish it first.`);
+      throw new Error(`Package ${name} (normalized as '${normalizedName}') is not published on npm. Please publish it first.`);
     }
   } else if (runtime === 'python') {
     try {
-      const output = execSync(`pip install --dry-run ${name} 2>&1`, { encoding: 'utf-8' });
+      const output = execSync(`pip install --dry-run ${normalizedName} 2>&1`, { encoding: 'utf-8' });
       console.log(`pip install output: ${output}`);
     } catch (error) {
       // Check if the error is due to Python version requirements
       if (error.stdout && error.stdout.includes('Ignored the following versions that require a different python version')) {
         console.log(`Package ${name} exists on PyPI but requires a different Python version. This is acceptable.`);
       } else {
-        throw new Error(`Package ${name} is not published on PyPI. Please publish it first.`);
+        throw new Error(`Package ${name} (normalized as '${normalizedName}') is not published on PyPI. Please publish it first.`);
       }
     }
   } else if (runtime === 'go') {
     try {
-      execSync(`go list ${name}`, { stdio: 'pipe' });
+      execSync(`go list ${normalizedName}`, { stdio: 'pipe' });
     } catch (error) {
-      throw new Error(`Package ${name} is not a valid Go package. Please ensure it's a valid Go module.`);
+      throw new Error(`Package ${name} (normalized as '${normalizedName}') is not a valid Go package. Please ensure it's a valid Go module.`);
     }
   }
 }
