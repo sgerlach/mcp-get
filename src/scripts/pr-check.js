@@ -30,6 +30,14 @@ export function normalizePackageName(name, runtime) {
   return normalized;
 }
 
+/**
+ * Converts a package name to a safe filename
+ * This matches the logic in package-registry.ts
+ */
+export function getPackageFilename(packageName) {
+  return packageName.replace(/^@/, '').replace(/\//g, '--');
+}
+
 async function validatePackages() {
   const packageListPath = path.join(__dirname, '../../packages/package-list.json');
   const packagesDir = path.join(__dirname, '../../packages');
@@ -54,6 +62,14 @@ async function validatePackages() {
         try {
           const content = fs.readFileSync(file, 'utf-8');
           const pkg = JSON.parse(content);
+          
+          // Validate filename matches package name
+          const filename = path.basename(file, '.json');
+          const expectedFilename = getPackageFilename(pkg.name);
+          if (filename !== expectedFilename) {
+            throw new Error(`Filename '${filename}' does not match expected filename '${expectedFilename}' for package '${pkg.name}'. Please rename the file.`);
+          }
+          
           newPackages.push(pkg);
         } catch (error) {
           console.warn(`Warning: Failed to parse package file ${file}: ${error.message}`);

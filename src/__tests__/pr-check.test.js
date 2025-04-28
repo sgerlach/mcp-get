@@ -12,7 +12,7 @@ jest.mock(prCheckPath, () => {
   };
 });
 
-const { normalizePackageName } = await import(prCheckPath);
+const { normalizePackageName, getPackageFilename } = await import(prCheckPath);
 
 describe('PR Check Utilities', () => {
   describe('normalizePackageName', () => {
@@ -33,6 +33,14 @@ describe('PR Check Utilities', () => {
     it('should handle empty or undefined names', () => {
       expect(normalizePackageName('', 'node')).toBe('');
       expect(normalizePackageName(undefined, 'node')).toBe('');
+    });
+  });
+
+  describe('getPackageFilename', () => {
+    it('should convert package names to safe filenames', () => {
+      expect(getPackageFilename('test-package')).toBe('test-package');
+      expect(getPackageFilename('@scope/package')).toBe('scope--package');
+      expect(getPackageFilename('org/package')).toBe('org--package');
     });
   });
 });
