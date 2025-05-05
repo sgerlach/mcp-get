@@ -183,34 +183,30 @@ export function validateRuntime(pkg) {
 async function validatePackagePublication(pkg) {
   const { name, runtime } = pkg;
   console.log(`Checking ${runtime} package publication...`);
-  
-  // Normalize the package name for npm/PyPI validation
-  const normalizedName = normalizePackageName(name, runtime);
-  console.log(`Normalized package name: ${normalizedName}`);
 
   if (runtime === 'node') {
     try {
-      execSync(`npm view ${normalizedName} version`, { stdio: 'pipe' });
+      execSync(`npm view ${name} version`, { stdio: 'pipe' });
     } catch (error) {
-      throw new Error(`Package ${name} (normalized as '${normalizedName}') is not published on npm. Please publish it first.`);
+      throw new Error(`Package ${name} is not published on npm. Please publish it first.`);
     }
   } else if (runtime === 'python') {
     try {
-      const output = execSync(`pip install --dry-run ${normalizedName} 2>&1`, { encoding: 'utf-8' });
+      const output = execSync(`pip install --dry-run ${name} 2>&1`, { encoding: 'utf-8' });
       console.log(`pip install output: ${output}`);
     } catch (error) {
       // Check if the error is due to Python version requirements
       if (error.stdout && error.stdout.includes('Ignored the following versions that require a different python version')) {
         console.log(`Package ${name} exists on PyPI but requires a different Python version. This is acceptable.`);
       } else {
-        throw new Error(`Package ${name} (normalized as '${normalizedName}') is not published on PyPI. Please publish it first.`);
+        throw new Error(`Package ${name} is not published on PyPI. Please publish it first.`);
       }
     }
   } else if (runtime === 'go') {
     try {
-      execSync(`go list ${normalizedName}`, { stdio: 'pipe' });
+      execSync(`go list ${name}`, { stdio: 'pipe' });
     } catch (error) {
-      throw new Error(`Package ${name} (normalized as '${normalizedName}') is not a valid Go package. Please ensure it's a valid Go module.`);
+      throw new Error(`Package ${name} is not a valid Go package. Please ensure it's a valid Go module.`);
     }
   }
 }
