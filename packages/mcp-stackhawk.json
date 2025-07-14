@@ -1,6 +1,6 @@
 {
   "name": "stackhawk-mcp",
-  "description": "Test for and FIX vulnerabilitites in your code or vibe-coded applicaitons with StackHawk",
+  "description": "Test for and FIX vulnerabilities in your code or vibe-coded applicaitons with StackHawk",
   "vendor": "StackHawk",
   "sourceUrl": "https://github.com/stackhawk/stackhawk-mcp",
   "homepage": "https://github.com/stackhawk/stackhawk-mcp",
